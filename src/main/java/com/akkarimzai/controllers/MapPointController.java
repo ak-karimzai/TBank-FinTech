@@ -1,10 +1,10 @@
-package com.akkarimzai.Controllers;
+package com.akkarimzai.controllers;
 
-import com.akkarimzai.Exceptions.DatabindException;
-import com.akkarimzai.Exceptions.NotFoundException;
-import com.akkarimzai.Exceptions.ValidationException;
-import com.akkarimzai.Models.DeserializeFileDto;
-import com.akkarimzai.Services.MapPointService;
+import com.akkarimzai.exceptions.DatabindException;
+import com.akkarimzai.exceptions.NotFoundException;
+import com.akkarimzai.exceptions.ValidationException;
+import com.akkarimzai.models.DeserializeFileDto;
+import com.akkarimzai.services.MapPointService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

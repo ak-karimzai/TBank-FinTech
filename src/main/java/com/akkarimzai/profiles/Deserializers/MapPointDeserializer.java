@@ -1,11 +1,11 @@
-package com.akkarimzai.Profiles.Deserializers;
+package com.akkarimzai.profiles.Deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.akkarimzai.Entities.Coordinate;
-import com.akkarimzai.Entities.MapPoint;
+import com.akkarimzai.entities.Coordinate;
+import com.akkarimzai.entities.MapPoint;
 
 import java.io.IOException;
 

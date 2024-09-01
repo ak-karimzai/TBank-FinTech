@@ -1,4 +1,4 @@
-package com.akkarimzai.Exceptions;
+package com.akkarimzai.exceptions;
 
 public class NotFoundException extends Exception {
     public NotFoundException(String name, Object key) {

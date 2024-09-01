@@ -1,7 +1,7 @@
-package com.akkarimzai.Profiles;
+package com.akkarimzai.profiles;
 
-import com.akkarimzai.Entities.MapPoint;
-import com.akkarimzai.Profiles.Serializers.MapPointSerializer;
+import com.akkarimzai.entities.MapPoint;
+import com.akkarimzai.profiles.Serializers.MapPointSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 

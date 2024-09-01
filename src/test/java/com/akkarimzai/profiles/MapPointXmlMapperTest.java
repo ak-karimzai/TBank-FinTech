@@ -1,7 +1,7 @@
-package com.akkarimzai.Profiles;
+package com.akkarimzai.profiles;
 
-import com.akkarimzai.Entities.Coordinate;
-import com.akkarimzai.Entities.MapPoint;
+import com.akkarimzai.entities.Coordinate;
+import com.akkarimzai.entities.MapPoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

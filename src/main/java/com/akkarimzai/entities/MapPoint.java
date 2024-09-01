@@ -1,4 +1,4 @@
-package com.akkarimzai.Entities;
+package com.akkarimzai.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class Coordinate {
-    private Double Latitude;
-    private Double Longitude;
+public class MapPoint {
+    private String Slug;
+    private Coordinate Coordinate;
 }

@@ -1,8 +1,8 @@
-package com.akkarimzai.Repositories;
+package com.akkarimzai.repositories;
 
-import com.akkarimzai.Exceptions.DatabindException;
-import com.akkarimzai.Exceptions.NotFoundException;
-import com.akkarimzai.Entities.MapPoint;
+import com.akkarimzai.exceptions.DatabindException;
+import com.akkarimzai.exceptions.NotFoundException;
+import com.akkarimzai.entities.MapPoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public interface MapPointRepository {

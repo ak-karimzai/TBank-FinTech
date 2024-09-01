@@ -1,4 +1,4 @@
-package com.akkarimzai.Models;
+package com.akkarimzai.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

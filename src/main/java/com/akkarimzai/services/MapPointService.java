@@ -1,11 +1,11 @@
-package com.akkarimzai.Services;
+package com.akkarimzai.services;
 
-import com.akkarimzai.Entities.MapPoint;
-import com.akkarimzai.Exceptions.DatabindException;
-import com.akkarimzai.Exceptions.NotFoundException;
-import com.akkarimzai.Exceptions.ValidationException;
-import com.akkarimzai.Models.DeserializeFileDto;
-import com.akkarimzai.Repositories.MapPointRepository;
+import com.akkarimzai.entities.MapPoint;
+import com.akkarimzai.exceptions.DatabindException;
+import com.akkarimzai.exceptions.NotFoundException;
+import com.akkarimzai.exceptions.ValidationException;
+import com.akkarimzai.models.DeserializeFileDto;
+import com.akkarimzai.repositories.MapPointRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

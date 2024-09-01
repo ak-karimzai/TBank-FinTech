@@ -1,4 +1,4 @@
-package com.akkarimzai.Exceptions;
+package com.akkarimzai.exceptions;
 
 public class ValidationException extends Exception {
     public ValidationException(String message) {

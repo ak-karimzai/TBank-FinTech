@@ -1,30 +1,29 @@
-package com.akkarimzai.Services;
+package com.akkarimzai.services;
 
-import com.akkarimzai.Entities.Coordinate;
-import com.akkarimzai.Entities.MapPoint;
-import com.akkarimzai.Exceptions.DatabindException;
-import com.akkarimzai.Exceptions.NotFoundException;
-import com.akkarimzai.Exceptions.ValidationException;
-import com.akkarimzai.Models.DeserializeFileDto;
-import com.akkarimzai.Profiles.MapPointJsonMapper;
-import com.akkarimzai.Profiles.MapPointXmlMapper;
-import com.akkarimzai.Repositories.MapPointRepository;
+import com.akkarimzai.entities.Coordinate;
+import com.akkarimzai.entities.MapPoint;
+import com.akkarimzai.exceptions.DatabindException;
+import com.akkarimzai.exceptions.NotFoundException;
+import com.akkarimzai.exceptions.ValidationException;
+import com.akkarimzai.models.DeserializeFileDto;
+import com.akkarimzai.profiles.MapPointJsonMapper;
+import com.akkarimzai.profiles.MapPointXmlMapper;
+import com.akkarimzai.repositories.MapPointRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MapPointServiceTest {
-    private AutoCloseable autoCloseable;
-
     @Mock
     private MapPointRepository mapPointRepository;
 
@@ -33,14 +32,8 @@ class MapPointServiceTest {
 
     @BeforeEach
     void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
         mapPointService = new MapPointService(
                 mapPointRepository, new MapPointJsonMapper(), new MapPointXmlMapper());
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
     }
 
     @Test
@@ -58,7 +51,7 @@ class MapPointServiceTest {
     }
 
     @Test
-    void requestSrcPathIsEmpty() throws DatabindException, ValidationException, NotFoundException {
+    void requestSrcPathIsEmpty() {
         // Arrange
         DeserializeFileDto request = new DeserializeFileDto("", "dst");
 
@@ -67,7 +60,7 @@ class MapPointServiceTest {
     }
 
     @Test
-    void requestDstPathIsEmpty() throws DatabindException, ValidationException, NotFoundException {
+    void requestDstPathIsEmpty() {
         // Arrange
         DeserializeFileDto request = new DeserializeFileDto("src", "");
 
@@ -86,7 +79,7 @@ class MapPointServiceTest {
     }
 
     @Test
-    void cannotReadFileContent() throws DatabindException, ValidationException, NotFoundException {
+    void cannotReadFileContent() throws DatabindException, NotFoundException {
         // Arrange
         DeserializeFileDto request = new DeserializeFileDto("src", "dst");
         when(mapPointRepository.load(eq(request.getSrcPath()), any(ObjectMapper.class))).thenThrow(DatabindException.class);
@@ -96,7 +89,7 @@ class MapPointServiceTest {
     }
 
     @Test
-    void cannotDeserializeObject() throws DatabindException, ValidationException, NotFoundException {
+    void cannotDeserializeObject() throws DatabindException, NotFoundException {
         // Arrange
         DeserializeFileDto request = new DeserializeFileDto("src", "dst");
 

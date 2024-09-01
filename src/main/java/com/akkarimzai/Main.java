@@ -1,12 +1,12 @@
 package com.akkarimzai;
 
-import com.akkarimzai.Controllers.MapPointController;
-import com.akkarimzai.Models.DeserializeFileDto;
-import com.akkarimzai.Profiles.MapPointJsonMapper;
-import com.akkarimzai.Profiles.MapPointXmlMapper;
-import com.akkarimzai.Repositories.MapPointRepository;
-import com.akkarimzai.Repositories.MapPointRepositoryFS;
-import com.akkarimzai.Services.MapPointService;
+import com.akkarimzai.controllers.MapPointController;
+import com.akkarimzai.models.DeserializeFileDto;
+import com.akkarimzai.profiles.MapPointJsonMapper;
+import com.akkarimzai.profiles.MapPointXmlMapper;
+import com.akkarimzai.repositories.MapPointRepository;
+import com.akkarimzai.repositories.MapPointRepositoryFS;
+import com.akkarimzai.services.MapPointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.logging.log4j.LogManager;
