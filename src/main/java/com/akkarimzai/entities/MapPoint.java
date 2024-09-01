@@ -1,15 +1,10 @@
 package com.akkarimzai.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 public class MapPoint {
-    private String Slug;
-    private Coordinate Coordinate;
+    private String slug;
+    private Coordinate coords;
 }

@@ -1,15 +1,10 @@
 package com.akkarimzai.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 public class Coordinate {
-    private Double Latitude;
-    private Double Longitude;
+    private Double lat;
+    private Double lon;
 }

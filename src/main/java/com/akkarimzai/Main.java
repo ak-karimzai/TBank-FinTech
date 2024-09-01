@@ -2,13 +2,12 @@ package com.akkarimzai;
 
 import com.akkarimzai.controllers.MapPointController;
 import com.akkarimzai.models.DeserializeFileDto;
-import com.akkarimzai.profiles.MapPointJsonMapper;
-import com.akkarimzai.profiles.MapPointXmlMapper;
 import com.akkarimzai.repositories.MapPointRepository;
 import com.akkarimzai.repositories.MapPointRepositoryFS;
 import com.akkarimzai.services.MapPointService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,8 +26,8 @@ public class Main {
 
         logger.info("App started");
         MapPointRepository mapPointRepository = new MapPointRepositoryFS();
-        ObjectMapper deserializer = new MapPointJsonMapper();
-        ObjectMapper serializer = new MapPointXmlMapper();
+        ObjectMapper deserializer = new ObjectMapper();
+        ObjectMapper serializer = new XmlMapper();
 
         MapPointService mapPointService = new MapPointService(mapPointRepository, deserializer, serializer);
 
