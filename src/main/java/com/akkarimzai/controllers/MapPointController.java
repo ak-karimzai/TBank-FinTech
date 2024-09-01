@@ -6,11 +6,10 @@ import com.akkarimzai.exceptions.ValidationException;
 import com.akkarimzai.models.DeserializeFileDto;
 import com.akkarimzai.services.MapPointService;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class MapPointController {
-    private final Logger logger = LogManager.getLogger(MapPointController.class.getName());
     private final MapPointService mapPointService;
 
     public MapPointController(MapPointService mapPointService) {
@@ -18,12 +17,12 @@ public class MapPointController {
     }
 
     public void deserialize(DeserializeFileDto readFileRequest)  {
-        logger.info("request {} accepted", readFileRequest);
+        log.info("request {} accepted", readFileRequest);
         try {
             mapPointService.deserialize(readFileRequest);
-            logger.info("request {} deserialized successfully", readFileRequest);
+            log.info("request {} deserialized successfully", readFileRequest);
         } catch (NotFoundException | ValidationException | DatabindException e) {
-            logger.error("An error occurred during deserializing {}: {}", readFileRequest, e.getMessage());
+            log.error("An error occurred during deserializing {}: {}", readFileRequest, e.getMessage());
         }
     }
 }

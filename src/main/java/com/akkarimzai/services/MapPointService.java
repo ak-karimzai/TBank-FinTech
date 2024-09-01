@@ -9,15 +9,14 @@ import com.akkarimzai.repositories.MapPointRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class MapPointService {
     private final MapPointRepository mapPointRepository;
     private final ObjectMapper deserializer;
     private final ObjectMapper serializer;
 
-    private final Logger logger = LogManager.getLogger(MapPointService.class.getName());
 
     public MapPointService(MapPointRepository mapPointRepository, ObjectMapper deserializer, ObjectMapper serializer) {
         this.mapPointRepository = mapPointRepository;
@@ -26,17 +25,17 @@ public class MapPointService {
     }
 
     public void deserialize(DeserializeFileDto deserializeFileRequest) throws NotFoundException, DatabindException, ValidationException {
-        logger.info("request {} received", deserializeFileRequest);
+        log.info("request {} received", deserializeFileRequest);
         if (deserializeFileRequest.getSrcPath().isEmpty() || deserializeFileRequest.getDstPath().isEmpty()) {
-            logger.error("invalid request {}", deserializeFileRequest);
+            log.error("invalid request {}", deserializeFileRequest);
             throw new ValidationException(
                     String.format("invalid request {%s}", deserializeFileRequest));
         }
 
         MapPoint mapPoint = mapPointRepository.load(deserializeFileRequest.getSrcPath(), this.deserializer);
-        logger.info("request {} object {} loaded", deserializeFileRequest, mapPoint);
+        log.info("request {} object {} loaded", deserializeFileRequest, mapPoint);
 
         mapPointRepository.save(mapPoint, deserializeFileRequest.getDstPath(), this.serializer);
-        logger.info("request {} object {} deserialized successfully", deserializeFileRequest, mapPoint);
+        log.info("request {} object {} deserialized successfully", deserializeFileRequest, mapPoint);
     }
 }
