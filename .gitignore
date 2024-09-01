@@ -41,5 +41,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-# Ignore logs
+# ignore logs
 .log
+
+# ignore any jar
+.jar
