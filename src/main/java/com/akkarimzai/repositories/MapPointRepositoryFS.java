@@ -39,7 +39,7 @@ public class MapPointRepositoryFS implements MapPointRepository {
         log.info("loading data from file {}", path);
 
 
-        if (Files.exists(Path.of(path))) {
+        if (!Files.exists(Path.of(path))) {
             log.error("file {} not exists", path);
             throw new NotFoundException("file", path);
         }
