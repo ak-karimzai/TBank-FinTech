@@ -6,10 +6,10 @@ import com.akkarimzai.exceptions.DatabindException;
 import com.akkarimzai.exceptions.NotFoundException;
 import com.akkarimzai.exceptions.ValidationException;
 import com.akkarimzai.models.DeserializeFileDto;
-import com.akkarimzai.profiles.MapPointJsonMapper;
-import com.akkarimzai.profiles.MapPointXmlMapper;
 import com.akkarimzai.repositories.MapPointRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +33,7 @@ class MapPointServiceTest {
     @BeforeEach
     void setUp() {
         mapPointService = new MapPointService(
-                mapPointRepository, new MapPointJsonMapper(), new MapPointXmlMapper());
+                mapPointRepository, new ObjectMapper(), new XmlMapper());
     }
 
     @Test
@@ -47,7 +47,8 @@ class MapPointServiceTest {
 
 
         // Act && Assert
-        mapPointService.deserialize(request);
+        Assertions.assertThatCode(() -> mapPointService.deserialize(request))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -56,7 +57,10 @@ class MapPointServiceTest {
         DeserializeFileDto request = new DeserializeFileDto("", "dst");
 
         // Act && Assert
-        assertThrows(ValidationException.class, () -> mapPointService.deserialize(request));
+        Assertions.assertThatThrownBy(() -> mapPointService.deserialize(request))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("invalid request");
+
     }
 
     @Test
@@ -65,7 +69,9 @@ class MapPointServiceTest {
         DeserializeFileDto request = new DeserializeFileDto("src", "");
 
         // Act && Assert
-        assertThrows(ValidationException.class, () -> mapPointService.deserialize(request));
+        Assertions.assertThatThrownBy(() -> mapPointService.deserialize(request))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("invalid request");
     }
 
     @Test
@@ -75,7 +81,8 @@ class MapPointServiceTest {
         when(mapPointRepository.load(eq(request.getSrcPath()), any(ObjectMapper.class))).thenThrow(NotFoundException.class);
 
         // Act && Assert
-        assertThrows(NotFoundException.class, () -> mapPointService.deserialize(request));
+        Assertions.assertThatThrownBy(() -> mapPointService.deserialize(request))
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -85,7 +92,8 @@ class MapPointServiceTest {
         when(mapPointRepository.load(eq(request.getSrcPath()), any(ObjectMapper.class))).thenThrow(DatabindException.class);
 
         // Act && Assert
-        assertThrows(DatabindException.class, () -> mapPointService.deserialize(request));
+        Assertions.assertThatThrownBy(() -> mapPointService.deserialize(request))
+                .isInstanceOf(DatabindException.class);
     }
 
     @Test
@@ -98,6 +106,7 @@ class MapPointServiceTest {
         Mockito.doThrow(DatabindException.class).when(mapPointRepository).save(eq(mapPoint), eq(request.getDstPath()), any(ObjectMapper.class));
 
         // Act && Assert
-        assertThrows(DatabindException.class, () -> mapPointService.deserialize(request));
+        Assertions.assertThatThrownBy(() -> mapPointService.deserialize(request))
+                .isInstanceOf(DatabindException.class);
     }
 }
