@@ -42,7 +42,7 @@ bin/
 .DS_Store
 
 # ignore logs
-.log
+*.log
 
 # ignore any jar
-.jar
+*.jar
