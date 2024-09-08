@@ -52,7 +52,7 @@ class CustomLinkedListCollectorTest {
                     return list;
                 },
                 (lhs, rhs) -> {
-                    rhs.forEach(lhs::add);
+                    lhs.addAll(rhs);
                     return lhs;
                 }
         );
@@ -77,7 +77,7 @@ class CustomLinkedListCollectorTest {
                     return lst;
                 },
                 (lhs, rhs) -> {
-                    rhs.forEach(lhs::add);
+                    lhs.addAll(rhs);
                     return lhs;
                 }
         );

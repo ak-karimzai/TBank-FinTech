@@ -22,13 +22,7 @@ public class CustomLinkedList<T> implements Iterable<T> {
 
     public CustomLinkedList(CustomLinkedList<T> c) {
         this();
-        for (
-                Node<T> temp = c.head;
-                temp != null;
-                temp = temp.next
-        ) {
-            add(temp.item);
-        }
+        this.addAll(c);
     }
 
     public boolean add(T elem) {
@@ -99,6 +93,12 @@ public class CustomLinkedList<T> implements Iterable<T> {
     }
 
     public boolean addAll(Collection<? extends T> c) {
+        int sizeBeforeAppendAll = this.size;
+        c.forEach(this::add);
+        return sizeBeforeAppendAll != this.size;
+    }
+
+    public boolean addAll(CustomLinkedList<? extends T> c) {
         int sizeBeforeAppendAll = this.size;
         c.forEach(this::add);
         return sizeBeforeAppendAll != this.size;

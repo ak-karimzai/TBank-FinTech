@@ -20,9 +20,9 @@ public class CustomLinkedListCollector<T> implements Collector<T, CustomLinkedLi
 
     @Override
     public BinaryOperator<CustomLinkedList<T>> combiner() {
-        return (lst1, lst2) -> {
-            lst2.forEach(lst1::add);
-            return lst1;
+        return (lhs, rhs) -> {
+            lhs.addAll(rhs);
+            return lhs;
         };
     }
 
