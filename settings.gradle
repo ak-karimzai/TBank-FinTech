@@ -1,2 +1,0 @@
-rootProject.name = 'Deserializer'
-include('app', 'list', 'utilities')
