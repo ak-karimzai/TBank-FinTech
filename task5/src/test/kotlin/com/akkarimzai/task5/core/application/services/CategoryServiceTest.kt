@@ -2,6 +2,8 @@ package com.akkarimzai.task5.core.application.services
 
 import com.akkarimzai.task5.core.application.contracts.ICategoryRepository
 import com.akkarimzai.task5.core.application.contracts.ILocationRepository
+import com.akkarimzai.task5.core.application.exceptions.NotFoundException
+import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList
 import com.akkarimzai.task5.core.application.models.category.CreateCategory
 import com.akkarimzai.task5.core.application.models.category.UpdateCategory
@@ -14,6 +16,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import io.mockk.*
+import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class CategoryServiceTest : FunSpec() {
@@ -32,6 +35,16 @@ class CategoryServiceTest : FunSpec() {
              verify(exactly = 1) { repository.save(entity) }
         }
 
+         test("save throws validation exception") {
+             // Arrange
+             val createCategory = CreateCategory("test", "")
+
+             // Act && Assert
+             assertThrows<ValidationException> {
+                 service.save(createCategory)
+             }
+         }
+
         test("load executes normally") {
             // Arrange
             val id = UUID.randomUUID()
@@ -46,10 +59,21 @@ class CategoryServiceTest : FunSpec() {
             category shouldBeEqual loadedCategory
         }
 
+         test("load category doesn't exist should throw NotFound exception") {
+             // Arrange
+             val id = UUID.randomUUID()
+             every { repository.load(id) } returns null
+
+             // Act && Assert
+             assertThrows<NotFoundException> {
+                 service.load(id)
+             }
+         }
+
         test("list executes normally") {
             // Arrange
             val pageableList = PageableList(1, 10)
-            every { repository.list(pageableList) } returns listOf()
+            every { repository.list(pageableList.page, pageableList.size) } returns listOf()
             every { repository.count() } returns 0
 
             // Act
@@ -58,6 +82,16 @@ class CategoryServiceTest : FunSpec() {
             // Assert
             paginatedList.items shouldBe emptyList<Category>()
         }
+
+         test("list page size less than zero throws validation exception") {
+             // Arrange
+             val pageableList = PageableList(0, 10)
+
+             // Act && Assert
+             assertThrows<ValidationException> {
+                 service.list(pageableList)
+             }
+         }
 
         test("update executes normally") {
             // Arrange
@@ -73,6 +107,17 @@ class CategoryServiceTest : FunSpec() {
             // Assert
             verify(exactly = 1) { repository.update(entity) }
         }
+
+         test("update with invalid request should throw ValidationException") {
+             // Arrange
+             val id = UUID.randomUUID()
+             val updateLocation = UpdateCategory("", "test")
+
+             // Act && Assert
+             assertThrows<ValidationException> {
+                 service.update(id, updateLocation)
+             }
+         }
 
         test("delete executes normally") {
             // Arrange
