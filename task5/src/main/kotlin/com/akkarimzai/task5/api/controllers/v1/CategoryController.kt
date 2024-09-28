@@ -17,30 +17,31 @@ import java.util.UUID
 @RequestMapping(value = ["/api/v1/categories"])
 @LogExecutionTime
 class CategoryController(private val service: CategoryService) {
-    private val logger = KotlinLogging.logger {}
-
     @GetMapping("/{categoryId}")
-    fun get(@PathVariable categoryId: UUID) : ResponseEntity<Category> {
-        return ResponseEntity<Category>(service.load(id = categoryId), HttpStatus.OK)
+    fun get(@PathVariable categoryId: UUID) : Category {
+        return service.load(id = categoryId);
     }
 
     @GetMapping
-    fun list(@ModelAttribute pageableList: PageableList) : ResponseEntity<PaginatedList<Category>> {
-        return ResponseEntity<PaginatedList<Category>>(service.list(pageableList), HttpStatus.OK)
+    fun list(@ModelAttribute pageableList: PageableList) : PaginatedList<Category> {
+        return service.list(pageableList)
     }
 
     @PostMapping
-    fun create(@RequestBody category: CreateCategory) : ResponseEntity<UUID> {
-        return ResponseEntity<UUID>(service.save(category), HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@RequestBody category: CreateCategory) : UUID {
+        return service.save(category)
     }
 
     @PutMapping("/{categoryId}")
-    fun update(@PathVariable categoryId: UUID, @RequestBody category: UpdateCategory) : ResponseEntity<Unit> {
-        return ResponseEntity(service.update(categoryId, category), HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable categoryId: UUID, @RequestBody category: UpdateCategory) {
+        return service.update(categoryId, category)
     }
 
     @DeleteMapping("/{categoryId}")
-    fun delete(@PathVariable categoryId: UUID) : ResponseEntity<Unit> {
-        return ResponseEntity(service.delete(categoryId), HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable categoryId: UUID) {
+        return service.delete(categoryId)
     }
 }

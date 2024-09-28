@@ -12,7 +12,6 @@ abstract class ValidatableDto {
             result = e.constraintViolations
                 .mapToMessage(baseName = "messages")
                 .map { "${it.property}: ${it.message}" }
-                .toList()
         }
         return result
     }

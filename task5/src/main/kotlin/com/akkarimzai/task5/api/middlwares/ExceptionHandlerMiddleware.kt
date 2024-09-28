@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @LogExecutionTime
 class ExceptionHandlerMiddleware : ResponseEntityExceptionHandler() {
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFoundException(e: BadRequestException): ResponseEntity<ErrorResponse<String>> {
+    fun handleNotFoundException(e: NotFoundException): ResponseEntity<ErrorResponse<String>> {
         return ResponseEntity<ErrorResponse<String>>(ErrorResponse(e.message ?: "Not found"), HttpStatus.NOT_FOUND)
     }
 

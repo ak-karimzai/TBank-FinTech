@@ -22,12 +22,12 @@ class LocationService(private val repository: ILocationRepository) {
         logger.info { "Saving new location: $newLocation" }
         val validationResult: List<String> = newLocation.validate()
         if (validationResult.isNotEmpty()) {
-            logger.warn { "Validation failure, validation result: $validationResult" }
+            logger.error { "Validation failure, validation result: $validationResult" }
             throw ValidationException(validationResult)
         }
 
         if (repository.slugExist(newLocation.slug)) {
-            logger.warn { "Location already exists, creating new location failed" }
+            logger.error { "Location already exists, creating new location failed" }
             throw BadRequestException("Location already exists")
         }
 
@@ -54,11 +54,11 @@ class LocationService(private val repository: ILocationRepository) {
         val validationResult: List<String> = pageableList.validate()
         if (validationResult.isNotEmpty())
             throw ValidationException(validationResult).also {
-                logger.warn { "Validation failure, validation result: ${it.validationResult}" }
+                logger.error { "Validation failure, validation result: ${it.validationResult}" }
             }
 
         logger.info { "Loading list: $pageableList, from repository" }
-        val list = repository.list(pageableList)
+        val list = repository.list(pageableList.page, pageableList.size)
         val count = repository.count()
 
         return PaginatedList(
@@ -76,7 +76,7 @@ class LocationService(private val repository: ILocationRepository) {
         val validationResult: List<String> = updateLocation.validate()
         if (validationResult.isNotEmpty())
             throw ValidationException(validationResult).also {
-                logger.warn { "Validation failure, validation result: ${it.validationResult}" }
+                logger.error { "Validation failure, validation result: ${it.validationResult}" }
             }
 
         val locationToUpdate = this.load(id)

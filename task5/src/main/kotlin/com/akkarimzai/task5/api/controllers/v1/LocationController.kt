@@ -17,30 +17,31 @@ import java.util.*
 @RequestMapping(value = ["/api/v1/locations"])
 @LogExecutionTime
 class LocationController(private val service: LocationService) {
-    private val logger = KotlinLogging.logger {}
-
     @GetMapping("/{locationId}")
-    fun get(@PathVariable locationId: UUID) : ResponseEntity<Location> {
-        return ResponseEntity<Location>(service.load(id = locationId), HttpStatus.OK)
+    fun get(@PathVariable locationId: UUID) : Location {
+        return service.load(id = locationId)
     }
 
     @GetMapping
-    fun list(@ModelAttribute pageableList: PageableList) : ResponseEntity<PaginatedList<Location>> {
-        return ResponseEntity<PaginatedList<Location>>(service.list(pageableList), HttpStatus.OK)
+    fun list(@ModelAttribute pageableList: PageableList) : PaginatedList<Location> {
+        return service.list(pageableList)
     }
 
     @PostMapping
-    fun save(location: CreateLocation) : ResponseEntity<UUID> {
-        return ResponseEntity<UUID>(service.save(location), HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
+    fun save(@RequestBody location: CreateLocation) : UUID {
+        return service.save(location)
     }
 
     @PutMapping("/{locationId}")
-    fun update(@PathVariable locationId: UUID, @RequestBody location: UpdateLocation) : ResponseEntity<Unit> {
-        return ResponseEntity(service.update(locationId, location), HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable locationId: UUID, @RequestBody location: UpdateLocation) {
+        return service.update(locationId, location)
     }
 
     @DeleteMapping("/{locationId}")
-    fun delete(@PathVariable locationId: UUID) : ResponseEntity<Unit> {
-        return ResponseEntity(service.delete(locationId), HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable locationId: UUID) {
+        return service.delete(locationId)
     }
 }

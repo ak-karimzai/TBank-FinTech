@@ -22,7 +22,7 @@ class CategoryService(private val repository: IEntityRepository<Category>) {
         val validationResult: List<String> = newCategory.validate()
         if (validationResult.isNotEmpty())
             throw ValidationException(validationResult).also {
-                logger.warn { "Validation failure, validation result: ${it.validationResult}" }
+                logger.error { "Validation failure, validation result: ${it.validationResult}" }
             }
 
         val entity = newCategory.toEntity()
@@ -48,10 +48,10 @@ class CategoryService(private val repository: IEntityRepository<Category>) {
         val validationResult: List<String> = pageableList.validate()
         if (validationResult.isNotEmpty())
             throw ValidationException(validationResult).also {
-                logger.warn { "Validation failure, validation result: ${it.validationResult}" }
+                logger.error { "Validation failure, validation result: ${it.validationResult}" }
             }
 
-        val list = repository.list(pageableList)
+        val list = repository.list(pageableList.page, pageableList.size)
         val count = repository.count()
 
         return PaginatedList(
@@ -69,7 +69,7 @@ class CategoryService(private val repository: IEntityRepository<Category>) {
         val validationResult: List<String> = updateCategory.validate()
         if (validationResult.isNotEmpty())
             throw ValidationException(validationResult).also {
-                logger.warn { "Validation failure, validation result: ${it.validationResult}" }
+                logger.error { "Validation failure, validation result: ${it.validationResult}" }
             }
 
         val categoryToUpdate = this.load(id)
