@@ -66,17 +66,17 @@ class NewsServiceIntegrationTests {
         }
     }
 
-//    companion object {
-//        @Container
-//        @JvmStatic
-//        val wiremock: WireMockContainer =
-//            WireMockContainer("wiremock/wiremock:3.5.4")
-//                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
-//
-//        @DynamicPropertySource
-//        @JvmStatic
-//        fun configureProperties(registry: DynamicPropertyRegistry) {
-//            registry.add("api.kudago.base-url", wiremock::getBaseUrl)
-//        }
-//    }
+    companion object {
+        @Container
+        @JvmStatic
+        val wiremock: WireMockContainer =
+            WireMockContainer("wiremock/wiremock:3.5.4")
+                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
+
+        @DynamicPropertySource
+        @JvmStatic
+        fun configureProperties(registry: DynamicPropertyRegistry) {
+            registry.add("api.kudago.base-url", wiremock::getBaseUrl)
+        }
+    }
 }
