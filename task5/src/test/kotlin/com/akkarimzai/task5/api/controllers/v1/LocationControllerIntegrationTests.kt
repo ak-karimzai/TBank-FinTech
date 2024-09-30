@@ -3,7 +3,6 @@ package com.akkarimzai.task5.api.controllers.v1
 import com.akkarimzai.task5.core.application.contracts.ILocationRepository
 import com.akkarimzai.task5.core.application.models.PageableList
 import com.akkarimzai.task5.core.application.models.PaginatedList
-import com.akkarimzai.task5.core.application.models.category.CreateCategory
 import com.akkarimzai.task5.core.application.models.location.CreateLocation
 import com.akkarimzai.task5.core.application.models.location.UpdateLocation
 import com.akkarimzai.task5.core.domain.entities.Location
