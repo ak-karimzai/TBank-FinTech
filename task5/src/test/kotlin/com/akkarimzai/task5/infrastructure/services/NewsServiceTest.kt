@@ -1,8 +1,10 @@
 package com.akkarimzai.task5.infrastructure.services
 
+import com.akkarimzai.task5.core.application.exceptions.ServiceUnavailableException
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -42,17 +44,39 @@ class NewsServiceIntegrationTests {
         locations.size shouldNotBe 0
     }
 
-    companion object {
-        @Container
-        @JvmStatic
-        val wiremock: WireMockContainer =
-            WireMockContainer("wiremock/wiremock:3.5.4")
-                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
+    @Test
+    fun `locations when uri is invalid should failed in request`(): Unit = runBlocking {
+        // Arrange
+        var locationUri = "/locationss/"
 
-        @DynamicPropertySource
-        @JvmStatic
-        fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("api.kudago.base-url", wiremock::getBaseUrl)
+        // Act && Assert
+        assertThrows<ServiceUnavailableException> {
+            val locations = newsService.fetchLocations(locationUri)
         }
     }
+
+    @Test
+    fun `categories when uri is invalid should failed in request`(): Unit = runBlocking {
+        // Arrange
+        var categoriesUri = "/place-categoriess/"
+
+        // Act && Assert
+        assertThrows<ServiceUnavailableException> {
+            val locations = newsService.fetchCategories(categoriesUri)
+        }
+    }
+
+//    companion object {
+//        @Container
+//        @JvmStatic
+//        val wiremock: WireMockContainer =
+//            WireMockContainer("wiremock/wiremock:3.5.4")
+//                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
+//
+//        @DynamicPropertySource
+//        @JvmStatic
+//        fun configureProperties(registry: DynamicPropertyRegistry) {
+//            registry.add("api.kudago.base-url", wiremock::getBaseUrl)
+//        }
+//    }
 }
