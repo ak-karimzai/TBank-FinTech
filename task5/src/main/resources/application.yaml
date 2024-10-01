@@ -5,5 +5,5 @@ spring:
 api:
   kudago:
     base-url: https://kudago.com/public-api/v1.4
-    categories: /place-categories
-    locations: /locations
+    categories: /place-categories/
+    locations: /locations/

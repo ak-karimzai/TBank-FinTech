@@ -6,7 +6,6 @@ import com.akkarimzai.task5.core.application.models.PaginatedList
 import com.akkarimzai.task5.core.application.models.category.CreateCategory
 import com.akkarimzai.task5.core.application.models.category.UpdateCategory
 import com.akkarimzai.task5.core.domain.entities.Category
-import com.akkarimzai.task5.core.domain.entities.Location
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
@@ -25,7 +24,7 @@ class CategoryControllerIntegrationTests(
 ) : FunSpec({
     val URI = "/api/v1/categories"
 
-    test("Should create a new category") {
+    test("save create body a new category") {
         // Arrange
         val request = CreateCategory("test", "test");
 
@@ -79,7 +78,7 @@ class CategoryControllerIntegrationTests(
         val id = UUID.randomUUID()
 
         // Act && Assert
-       webTestClient.get()
+        webTestClient.get()
             .uri("$URI/$id")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()

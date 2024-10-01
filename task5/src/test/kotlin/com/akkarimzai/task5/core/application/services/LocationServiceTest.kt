@@ -14,7 +14,6 @@ import io.kotest.matchers.shouldBe
 import io.mockk.*
 import org.junit.jupiter.api.assertThrows
 import java.util.*
-import kotlin.test.assertFailsWith
 
 class LocationServiceTest : FunSpec() {
     init {
@@ -39,7 +38,7 @@ class LocationServiceTest : FunSpec() {
                 val createLocation = CreateLocation("", "test")
 
                 // Act && Assert
-                assertFailsWith<ValidationException> { service.save(createLocation) }
+                assertThrows<ValidationException> { service.save(createLocation) }
             }
 
             test("load executes normally") {
