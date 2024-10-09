@@ -8,13 +8,18 @@ import com.akkarimzai.task7.models.ConvertedCurrencyDto
 import com.akkarimzai.task7.models.CurrencyInfoDto
 import com.akkarimzai.task7.responses.Valute
 import com.akkarimzai.task7.utils.Validators
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class CurrencyExchangeService(private val currencyClient: ICurrencyClient) {
+    private val logger = KotlinLogging.logger {}
+
     fun rate(currency: String): CurrencyInfoDto {
+        logger.info { "Request rate with currency: $currency" }
         if (!Validators.isValidCurrency(currency)) {
+            logger.error { "Currency: $currency is not valid" }
             throw BadRequestException("Invalid currency: $currency.")
         }
 
@@ -22,14 +27,18 @@ class CurrencyExchangeService(private val currencyClient: ICurrencyClient) {
 
         return CurrencyInfoDto(
             currencyInfo.charCode,
-            currencyInfo.value)
+            currencyInfo.value).also {
+                logger.info { "Currency info: $currencyInfo" }
+        }
     }
 
     fun convert(request: ConvertCurrencyCommand): ConvertedCurrencyDto {
+        logger.info { "Request: $request" }
         val fromCurrency = getCurrencyInfo(request.fromCurrency)
         val toCurrency = getCurrencyInfo(request.toCurrency)
 
         if (fromCurrency.charCode == toCurrency.charCode) {
+            logger.info { "Request from and to currency are equal: $request" }
             throw BadRequestException("from and to currency are same.")
         }
 
@@ -46,7 +55,9 @@ class CurrencyExchangeService(private val currencyClient: ICurrencyClient) {
         return ConvertedCurrencyDto(
             request.fromCurrency,
             request.toCurrency,
-            convertedAmount)
+            convertedAmount).also {
+                logger.info { "Converted currency: $it" }
+        }
     }
 
     private fun getCurrencyInfo(currency: String): Valute {
@@ -56,9 +67,11 @@ class CurrencyExchangeService(private val currencyClient: ICurrencyClient) {
             return Valute(currencyInUpperCase, 1.0, 1.0)
         }
 
+        logger.info { "Currency information: $currencyInUpperCase" }
         return currencyClient.fetchAvailableCurrencies()
             .valutes
             .firstOrNull { it.charCode == currency.uppercase(Locale.getDefault()) }
-            ?: throw NotFoundException("Currency", currency)
+            ?: throw NotFoundException("Currency", currency).also {
+                logger.info { "Currency info: $it" } }
     }
 }

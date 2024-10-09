@@ -24,6 +24,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 
     implementation("org.springframework.boot:spring-boot-starter-aop")
