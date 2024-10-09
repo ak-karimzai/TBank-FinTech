@@ -12,7 +12,6 @@ import kotlin.test.Test
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
-@Testcontainers
 class CurrencyControllerFailureTests @Autowired constructor(
     private val webTestClient: WebTestClient,
 ) : AbstractCurrencyClientFailureTest() {
