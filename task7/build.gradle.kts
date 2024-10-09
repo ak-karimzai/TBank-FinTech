@@ -25,6 +25,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 
