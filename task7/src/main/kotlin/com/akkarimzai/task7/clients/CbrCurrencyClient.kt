@@ -61,9 +61,7 @@ class CbrCurrencyClient(private val client: RestClient) : ICurrencyClient {
 
     companion object {
         private const val CIRCUIT_BREAKER_KEY = "Currencies"
-        @Value("\${cache.currencies.key}")
         private const val CACHE_NAME = "Currencies"
-        @Value("\${cache.currencies.ttl}")
         private const val CACHE_DELAY = 3600000L
     }
 }
