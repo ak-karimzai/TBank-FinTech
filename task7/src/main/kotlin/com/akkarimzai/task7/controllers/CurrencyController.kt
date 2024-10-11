@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
+import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -31,22 +32,22 @@ class CurrencyController(
                 ApiResponse(
                     description = "Найден курс валют.",
                     responseCode = "200",
-                    content = [Content(mediaType = "application/json", schema = Schema(implementation = CurrencyInfoDto::class))]
+                    content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = CurrencyInfoDto::class))]
                 ),
                 ApiResponse(
                     description = "Валюта недействительна.",
                     responseCode = "400",
-                    content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                    content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
                 ),
                 ApiResponse(
                     description = "Валюта действительна, но отсутствует в списке валют.",
                     responseCode = "404",
-                    content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                    content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
                 ),
                 ApiResponse(
                     description = "Сервис перевода недоступна.",
                     responseCode = "503",
-                    content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                    content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
                 )
             ]
     )
@@ -62,22 +63,22 @@ class CurrencyController(
             ApiResponse(
                 description = "обмен валюты успешно.",
                 responseCode = "200",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = ConvertedCurrencyDto::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ConvertedCurrencyDto::class))]
             ),
             ApiResponse(
                 description = "Валюта недействительна.",
                 responseCode = "400",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
                 description = "Валюта действительна, но отсутствует в списке валют.",
                 responseCode = "404",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
                 description = "Сервис перевода недоступна.",
                 responseCode = "503",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
     )
