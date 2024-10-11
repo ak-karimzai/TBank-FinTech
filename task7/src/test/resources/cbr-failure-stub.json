@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/XML_daily.asp/"
+  },
+  "response": {
+    "status": 500
+  }
+}

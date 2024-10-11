@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: task7
+
+api:
+  cbr:
+    base-url: https://www.cbr.ru/scripts
+    daily-rates: /XML_daily.asp/
+
+cache:
+  currencies:
+    key: "currencies"
+    ttl: 3600000
