@@ -15,7 +15,7 @@ import org.springframework.web.client.toEntity
 class NewsService(private val client: RestClient) : INewsService {
     private val logger = KotlinLogging.logger {}
 
-    override suspend fun fetchCategories(endpoint: String): List<ApiCategory> {
+    override fun fetchCategories(endpoint: String): List<ApiCategory> {
         logger.info { "Fetching categories" }
 
         val response = try {
@@ -36,7 +36,7 @@ class NewsService(private val client: RestClient) : INewsService {
         return response.body ?: listOf()
     }
 
-    override suspend fun fetchLocations(endpoint: String): List<ApiLocation> {
+    override fun fetchLocations(endpoint: String): List<ApiLocation> {
         logger.info { "Fetching locations" }
 
         val response = try {
