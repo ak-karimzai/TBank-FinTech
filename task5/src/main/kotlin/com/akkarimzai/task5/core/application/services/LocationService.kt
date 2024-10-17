@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.ILocationRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.ILocationRepository
 import com.akkarimzai.task5.core.application.exceptions.BadRequestException
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException

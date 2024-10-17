@@ -1,4 +1,4 @@
-package com.akkarimzai.task5.infrastructure.services
+package com.akkarimzai.task5.infrastructure.clients
 
 import com.akkarimzai.task5.core.application.exceptions.ServiceUnavailableException
 import io.kotest.common.runBlocking
@@ -15,10 +15,10 @@ import org.wiremock.integrations.testcontainers.WireMockContainer
 
 @Testcontainers
 @SpringBootTest
-class NewsServiceIntegrationTests {
+class NewsClientIntegrationTests {
 
     @Autowired
-    private lateinit var newsService: NewsService
+    private lateinit var newsService: NewsClient
 
     @Test
     fun `categories list are not empty`(): Unit = runBlocking {

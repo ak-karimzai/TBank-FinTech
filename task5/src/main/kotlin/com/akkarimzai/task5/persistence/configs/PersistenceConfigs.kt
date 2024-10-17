@@ -9,8 +9,13 @@ import java.util.concurrent.Executors
 
 @Configuration
 class PersistenceConfigs {
-    @Bean
-    fun restClient(@Value("\${api.kudago.base-url}") baseUrl: String): RestClient {
+    @Bean("news-client")
+    fun newsClient(@Value("\${api.kudago.base-url}") baseUrl: String): RestClient {
+        return RestClient.create(baseUrl)
+    }
+
+    @Bean("currency-client")
+    fun currencyClient(@Value("\${api.currency.base-url}") baseUrl: String): RestClient {
         return RestClient.create(baseUrl)
     }
 

@@ -7,9 +7,7 @@ import com.akkarimzai.task5.core.application.models.location.UpdateLocation
 import com.akkarimzai.task5.core.application.services.LocationService
 import com.akkarimzai.task5.core.domain.entities.Location
 import com.akkarimzai.task5.persistence.annotations.logging.LogExecutionTime
-import mu.KotlinLogging
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 

@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.persistence.repositories
 
-import com.akkarimzai.task5.core.application.contracts.IEntityRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.IEntityRepository
 import com.akkarimzai.task5.core.domain.common.Entity
 import com.akkarimzai.task5.persistence.annotations.logging.LogExecutionTime
 import com.akkarimzai.task5.persistence.utils.InMemoryStore
