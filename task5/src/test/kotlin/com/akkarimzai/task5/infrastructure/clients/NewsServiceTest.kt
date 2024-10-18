@@ -12,6 +12,11 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.wiremock.integrations.testcontainers.WireMockContainer
+import java.time.LocalDate
+import java.time.temporal.ChronoField
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @Testcontainers
 @SpringBootTest
@@ -21,10 +26,7 @@ class NewsClientIntegrationTests {
     private lateinit var newsService: NewsClient
 
     @Test
-    fun `categories list are not empty`(): Unit = runBlocking {
-        // Arrange
-        var categoriesUri = "/place-categories/"
-
+    fun `categories list are not empty`() {
         // Act
         val categories = newsService.fetchLocations()
 
@@ -33,10 +35,7 @@ class NewsClientIntegrationTests {
     }
 
     @Test
-    fun `locations list are not empty`(): Unit = runBlocking {
-        // Arrange
-        var locationUri = "/locations/"
-
+    fun `locations list are not empty`() {
         // Act
         val locations = newsService.fetchLocations()
 
@@ -46,9 +45,6 @@ class NewsClientIntegrationTests {
 
     @Test
     fun `locations when uri is invalid should failed in request`(): Unit = runBlocking {
-        // Arrange
-        var locationUri = "/locationss/"
-
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
             val locations = newsService.fetchLocations()
@@ -57,13 +53,35 @@ class NewsClientIntegrationTests {
 
     @Test
     fun `categories when uri is invalid should failed in request`(): Unit = runBlocking {
-        // Arrange
-        var categoriesUri = "/place-categoriess/"
-
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
             val locations = newsService.fetchCategories()
         }
+    }
+
+    @Test
+    fun `test rate limiting on fetchLocations`() {
+        val executor = Executors.newFixedThreadPool(5)
+        val latch = CountDownLatch(5)
+
+        for (i in 1..5) {
+            executor.submit {
+                try {
+                    newsService.fetchEvents(LocalDate.now().with(ChronoField.DAY_OF_WEEK, 1),
+                        LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7))
+                } finally {
+                    latch.countDown()
+                }
+            }
+        }
+
+        latch.await(1, TimeUnit.SECONDS)
+
+        assertThrows<ServiceUnavailableException> {
+            newsService.fetchLocations()
+        }
+
+        executor.shutdown()
     }
 
     companion object {
@@ -71,7 +89,7 @@ class NewsClientIntegrationTests {
         @JvmStatic
         val wiremock: WireMockContainer =
             WireMockContainer("wiremock/wiremock:3.5.4")
-                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
+                .withMappingFromResource("kudago-success-stub", "kudago-success-stub.json")
 
         @DynamicPropertySource
         @JvmStatic

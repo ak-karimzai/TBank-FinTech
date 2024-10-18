@@ -61,8 +61,8 @@ class EventServiceTest(
         result.subscribe({ result ->
             result.size shouldBe  0
         },
-            { error ->
-                throw error
-            })
+        { error ->
+            throw error
+        })
     }
 })
