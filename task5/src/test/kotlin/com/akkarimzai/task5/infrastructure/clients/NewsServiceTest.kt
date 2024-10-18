@@ -26,7 +26,7 @@ class NewsClientIntegrationTests {
         var categoriesUri = "/place-categories/"
 
         // Act
-        val categories = newsService.fetchLocations(categoriesUri)
+        val categories = newsService.fetchLocations()
 
         // Assert
         categories.size shouldNotBe 0
@@ -38,7 +38,7 @@ class NewsClientIntegrationTests {
         var locationUri = "/locations/"
 
         // Act
-        val locations = newsService.fetchLocations(locationUri)
+        val locations = newsService.fetchLocations()
 
         // Assert
         locations.size shouldNotBe 0
@@ -51,7 +51,7 @@ class NewsClientIntegrationTests {
 
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
-            val locations = newsService.fetchLocations(locationUri)
+            val locations = newsService.fetchLocations()
         }
     }
 
@@ -62,7 +62,7 @@ class NewsClientIntegrationTests {
 
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
-            val locations = newsService.fetchCategories(categoriesUri)
+            val locations = newsService.fetchCategories()
         }
     }
 
