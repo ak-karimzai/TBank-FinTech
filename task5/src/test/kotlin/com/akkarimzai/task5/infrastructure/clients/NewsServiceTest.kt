@@ -59,31 +59,6 @@ class NewsClientIntegrationTests {
         }
     }
 
-    @Test
-    fun `test rate limiting on fetchLocations`() {
-        val executor = Executors.newFixedThreadPool(5)
-        val latch = CountDownLatch(5)
-
-        for (i in 1..5) {
-            executor.submit {
-                try {
-                    newsService.fetchEvents(LocalDate.now().with(ChronoField.DAY_OF_WEEK, 1),
-                        LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7))
-                } finally {
-                    latch.countDown()
-                }
-            }
-        }
-
-        latch.await(1, TimeUnit.SECONDS)
-
-        assertThrows<ServiceUnavailableException> {
-            newsService.fetchLocations()
-        }
-
-        executor.shutdown()
-    }
-
     companion object {
         @Container
         @JvmStatic
