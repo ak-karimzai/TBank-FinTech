@@ -1,17 +1,13 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.ICategoryRepository
-import com.akkarimzai.task5.core.application.contracts.ILocationRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.ICategoryRepository
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList
 import com.akkarimzai.task5.core.application.models.category.CreateCategory
 import com.akkarimzai.task5.core.application.models.category.UpdateCategory
-import com.akkarimzai.task5.core.application.models.location.CreateLocation
-import com.akkarimzai.task5.core.application.models.location.UpdateLocation
 import com.akkarimzai.task5.core.application.profiles.toEntity
 import com.akkarimzai.task5.core.domain.entities.Category
-import com.akkarimzai.task5.core.domain.entities.Location
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe

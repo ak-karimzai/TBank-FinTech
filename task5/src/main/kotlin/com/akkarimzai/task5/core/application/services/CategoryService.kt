@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.IEntityRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.IEntityRepository
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList

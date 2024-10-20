@@ -1,4 +1,4 @@
-package com.akkarimzai.task5.infrastructure.models
+package com.akkarimzai.task5.core.application.models.news
 
 data class ApiCategory(
     val id: Int?,

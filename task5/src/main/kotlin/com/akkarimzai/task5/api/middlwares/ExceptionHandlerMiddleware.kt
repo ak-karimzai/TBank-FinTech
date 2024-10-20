@@ -3,6 +3,7 @@ package com.akkarimzai.task5.api.middlwares
 import com.akkarimzai.task5.api.models.ErrorResponse
 import com.akkarimzai.task5.core.application.exceptions.BadRequestException
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
+import com.akkarimzai.task5.core.application.exceptions.ServiceUnavailableException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.persistence.annotations.logging.LogExecutionTime
 import org.springframework.http.HttpStatus
@@ -23,6 +24,11 @@ class ExceptionHandlerMiddleware : ResponseEntityExceptionHandler() {
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(e: BadRequestException): ResponseEntity<ErrorResponse<String>> {
         return ResponseEntity<ErrorResponse<String>>(ErrorResponse(e.message ?: "Bad Request"), HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(ServiceUnavailableException::class)
+    fun handleServiceUnavailableException(e: ServiceUnavailableException): ResponseEntity<ErrorResponse<String>> {
+        return ResponseEntity<ErrorResponse<String>>(ErrorResponse(e.message ?: "Bad Request"), HttpStatus.SERVICE_UNAVAILABLE)
     }
 
     @ExceptionHandler(ValidationException::class)
