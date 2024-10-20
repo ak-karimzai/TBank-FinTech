@@ -103,10 +103,12 @@ class NewsClient(
     private fun <T> withRateLimiting(block: () -> T): T {
         return try {
             semaphore.acquire()
-            block().also { semaphore.release() }
+            block()
         } catch (e: InterruptedException) {
             logger.error { "Failed to acquire semaphore: ${e.message}" }
             throw ServiceUnavailableException("News service not available.")
+        } finally {
+            semaphore.release()
         }
     }
 
