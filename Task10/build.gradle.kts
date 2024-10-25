@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "3.3.4"
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.jpa") version "1.9.25"
+    kotlin("kapt") version "1.8.0"
 }
 
 group = "com.akkarimzai"
@@ -15,6 +16,15 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/kotlin")
+            srcDirs("target/generated-sources/annotations")
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -22,7 +32,11 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
+    kapt("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    implementation("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.valiktor:valiktor-core:0.12.0")
 
@@ -51,6 +65,12 @@ dependencies {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
+kapt {
+    arguments {
+        arg("hibernate.jpamodelgen.targetPackage", "com.akkarimzai.task10.entities")
     }
 }
 

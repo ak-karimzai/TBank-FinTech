@@ -7,15 +7,14 @@ import com.akkarimzai.task10.models.event.*
 import com.akkarimzai.task10.profiles.toEventDto
 import com.akkarimzai.task10.profiles.toEventEntity
 import com.akkarimzai.task10.repositories.EventRepository
-import com.akkarimzai.task10.repositories.EventRepositoryMock
 import com.akkarimzai.task10.repositories.PlaceRepository
-import com.akkarimzai.task10.repositories.PlaceRepositoryMock
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldNotBe
 import io.mockk.*
 import org.junit.jupiter.api.assertThrows
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import java.time.LocalDateTime
 import java.util.*
@@ -32,8 +31,8 @@ class EventServiceTest(
 
     test("create should create event") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
-        val event = EventRepositoryMock.getSingleEvent()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
+        val event = Event(id = 10, name = "Test Event", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline", place = place)
         val command = CreateEventCommand(
             name = "Test Event", date = LocalDateTime.of(2020, 1, 1, 1, 1, 1), tagline = "test tagline")
 
@@ -61,10 +60,10 @@ class EventServiceTest(
 
     test("update should update event") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
         val command = UpdateEventCommand(
             name = "Test Event", date = LocalDateTime.of(2020, 1, 1, 1, 1, 1), "test tagline")
-        val event = EventRepositoryMock.getSingleEvent()
+        val event = Event(id = 10, name = "Test Event", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline", place = place)
         val updatedEvent = command.toEventEntity(event)
 
         every { eventRepository.findById(event.id!!) } returns Optional.of(event)
@@ -80,8 +79,8 @@ class EventServiceTest(
 
     test("update with invalid name command should throw validation exception") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
-        val event = EventRepositoryMock.getSingleEvent()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
+        val event = Event(id = 10, name = "Test Event", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline", place = place)
         val command = UpdateEventCommand(
             name = "", date = LocalDateTime.of(2020, 1, 1, 1, 1, 1), "test tagline")
 
@@ -96,8 +95,8 @@ class EventServiceTest(
         // Arrange
         val placeId = 10L
         val eventId = 10L
-        val place = Place(placeId, "Test title", "Test description", "Test description")
-        val event = Event(id = placeId, name = "Test name", date = LocalDateTime.now(), tagline = "Test tagline", place = place)
+        val place = Place(id = placeId, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
+        val event = Event(id = eventId, name = "Test name", date = LocalDateTime.now(), tagline = "Test tagline", place = place)
         val command = DeleteEventCommand(placeId, eventId)
         every { placeRepository.findById(placeId) } returns Optional.of(place)
         every { eventRepository.findById(eventId) } returns Optional.of(event)
@@ -152,8 +151,14 @@ class EventServiceTest(
         val placeId = 10L
         val page = 1
         val size = 10
+        val place = Place(placeId, "Test title", "Test description", "Test description")
+        val eventList = PageImpl(listOf(
+            Event(id = 1, name = "Test Event1", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline1", place = place),
+            Event(id = 2, name = "Test Event2", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline2", place = place),
+            Event(id = 3, name = "Test Event3", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline3", place = place),
+            Event(id = 4, name = "Test Event4", date = LocalDateTime.of(2020, 1, 1, 1, 1), tagline = "Test tagline4", place = place)))
         every { placeRepository.existsById(placeId) } returns true
-        every { eventRepository.findAll(any(), PageRequest.of(page, size)) } returns EventRepositoryMock.getEventPage()
+        every { eventRepository.findAll(any(), PageRequest.of(page, size)) } returns eventList
 
         // Act
         val pagedEventList = service.list(placeId, query = ListEventsQuery(page = page, size = size))
@@ -166,7 +171,7 @@ class EventServiceTest(
     test("list with invalid page should throw validation exception") {
         // Arrange
         val placeId = 10L
-        val page = 0
+        val page = -1
         val size = 10
 
         // Act && Assert

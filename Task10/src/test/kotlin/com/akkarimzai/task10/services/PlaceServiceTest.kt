@@ -1,13 +1,14 @@
 package com.akkarimzai.task10.services
 
+import com.akkarimzai.task10.entities.Place
 import com.akkarimzai.task10.models.place.*
 import com.akkarimzai.task10.profiles.toPlaceEntity
 import com.akkarimzai.task10.repositories.PlaceRepository
-import com.akkarimzai.task10.repositories.PlaceRepositoryMock
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
-import io.kotest.matchers.shouldBe
 import io.mockk.*
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import java.util.Optional
 
@@ -32,7 +33,7 @@ class PlaceServiceTest(
 
     test("update should updates place") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
         val command = UpdatePlaceCommand(name = "Test name", address = "Test address", description = "Test description", subway = null)
         val placetoUpdate = command.toPlaceEntity(place)
         every { repository.findById(place.id!!) } returns Optional.of(place)
@@ -47,7 +48,7 @@ class PlaceServiceTest(
 
     test("delete should delete place by id") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
         val command = DeletePlaceCommand(place.id!!)
         every { repository.findById(place.id!!) } returns Optional.of(place)
         every { repository.delete(place) } just Runs
@@ -62,7 +63,7 @@ class PlaceServiceTest(
 
     test("get should return place by id") {
         // Arrange
-        val place = PlaceRepositoryMock.getSinglePlace()
+        val place = Place(id = 1, name = "Test place", address = "Test address", description = "Test description", subway = "Test subway")
         val query = GetPlaceQuery(place.id!!)
         every { repository.findById(place.id!!) } returns Optional.of(place)
 
@@ -79,7 +80,10 @@ class PlaceServiceTest(
 
     test("list should return paged place list") {
         // Arrange
-        val pagedPlaces = PlaceRepositoryMock.getPageList()
+        val pagedPlaces = PageImpl(listOf(
+            Place(1, "Test place1", "Test address1", "Test description1", "Test subway1"),
+            Place(2, "Test place2", "Test address2", "Test description2", "Test subway2"),
+            Place(3, "Test place3", "Test address3", "Test description3", "Test subway3")))
         val query = ListPlaceQuery(1, 10)
         every { repository.findAll(PageRequest.of(query.page, query.size)) } returns pagedPlaces
 
@@ -88,6 +92,6 @@ class PlaceServiceTest(
 
         // Assert
         verify(exactly = 1) { repository.findAll(PageRequest.of(query.page, query.size)) }
-        result.size shouldBe pagedPlaces.size
+        result shouldHaveSize pagedPlaces.size
     }
 })
