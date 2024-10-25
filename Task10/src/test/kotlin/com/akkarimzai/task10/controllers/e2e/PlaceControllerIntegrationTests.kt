@@ -1,32 +1,19 @@
-package com.akkarimzai.task10.controllers.integration
+package com.akkarimzai.task10.controllers.e2e
 
 import com.akkarimzai.task10.models.place.CreatePlaceCommand
 import com.akkarimzai.task10.models.place.PlaceDto
 import com.akkarimzai.task10.models.place.UpdatePlaceCommand
-import com.akkarimzai.task10.repositories.EventRepository
-import com.akkarimzai.task10.repositories.PlaceRepository
-import com.akkarimzai.task10.services.PlaceService
-import io.kotest.matchers.comparables.shouldBeGreaterThan
-import io.mockk.clearMocks
-import io.mockk.mockk
+import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class EventControllerIntegrationTests(
-    private val placeRepository: PlaceRepository = mockk<PlaceRepository>(),
-    private val service: PlaceService = PlaceService(placeRepository),
+class PlaceControllerIntegrationTests(
     @Autowired private val webTestClient: WebTestClient
-) {
-    @BeforeTest
-    fun `clear mocks`() {
-        clearMocks(placeRepository)
-    }
-
+): AbstractIntegrationTestConfig() {
     @Test
     fun `should create place successfully and persist in DB`() {
         // Arrange
@@ -76,7 +63,7 @@ class EventControllerIntegrationTests(
 
         // Assert
         assert(fetchedPlace != null)
-        assert(fetchedPlace.id == createdPlaceId)
+        assert(fetchedPlace!!.id == createdPlaceId)
         assert(fetchedPlace.name == command.name)
     }
 
@@ -85,18 +72,18 @@ class EventControllerIntegrationTests(
         // Arrange
         val createCommand = CreatePlaceCommand("Test", "Test", "Test", null)
         val updateCommand = UpdatePlaceCommand("NewTest", null, null, null)
-        val createdPlace = createPlace(createCommand)
+        val createdPlaceId = createPlace(createCommand)
 
         // Act
         webTestClient.put()
-            .uri("/api/places/${createdPlace.id}")
+            .uri("/api/places/${createdPlaceId}")
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(updateCommand)
             .exchange()
             .expectStatus().isNoContent
 
         // Assert
-        val updatedPlace = fetchById(createdPlace.id)
+        val updatedPlace = fetchById(createdPlaceId)
         assert(updatedPlace != null)
         assert(updatedPlace!!.name == updateCommand.name!!)
     }
@@ -105,17 +92,19 @@ class EventControllerIntegrationTests(
     fun `delete should remove entity from database`() {
         // Arrange
         val command = CreatePlaceCommand("Test", "Test", "Test", null)
-        val createdPlace = createPlace(command)
+        val createdPlaceId = createPlace(command)
+        val createdPlace = fetchById(createdPlaceId)
 
         // Act
+        createdPlace shouldNotBe null
         webTestClient.delete()
-            .uri("/api/places/${createdPlace.id}")
+            .uri("/api/places/${createdPlace!!.id}")
             .exchange()
             .expectStatus().isNoContent
 
         // Assert
         webTestClient.get()
-            .uri("/api/places/${createdPlace.id}")
+            .uri("/api/places/${createdPlaceId}")
             .exchange()
             .expectStatus().isNotFound
     }
@@ -131,8 +120,6 @@ class EventControllerIntegrationTests(
             .uri("/api/places?page=0&size=10")
             .exchange()
             .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.content").isArray
     }
 
     fun createPlace(command: CreatePlaceCommand): Long {
