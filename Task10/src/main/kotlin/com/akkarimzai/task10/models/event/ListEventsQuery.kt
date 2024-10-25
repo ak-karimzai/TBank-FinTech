@@ -15,7 +15,7 @@ class ListEventsQuery(
     override fun dataValidator() {
         validate(this) {
             validate(ListEventsQuery::page)
-                .isGreaterThan(0)
+                .isGreaterThanOrEqualTo(0)
 
             validate(ListEventsQuery::size)
                 .isGreaterThan(0)

@@ -134,7 +134,7 @@ class EventService(
         }
 
         return event.also {
-            logger.info { "Event loaded: $it" }
+            logger.info { "Event loaded: ${it.id}" }
         }
     }
 }

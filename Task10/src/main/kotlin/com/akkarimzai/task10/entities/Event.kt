@@ -14,4 +14,8 @@ data class Event(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     val place: Place
-)
+) {
+    override fun toString(): String {
+        return "Event(id=$id, name='$name', date=$date, tagline=$tagline, place=${place.id})"
+    }
+}

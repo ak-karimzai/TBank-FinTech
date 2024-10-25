@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 data class CreateEventCommand(
     val name: String,
     val date: LocalDateTime,
-    val tagline: String?
+    val tagline: String? = null
 ): ValidatableCQ() {
     override fun dataValidator() {
         validate(this) {

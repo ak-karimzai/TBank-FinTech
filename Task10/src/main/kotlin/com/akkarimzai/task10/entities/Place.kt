@@ -13,4 +13,8 @@ data class Place(
     val subway: String? = null,
     @OneToMany(mappedBy = "place", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val events: MutableList<Event> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "Place(id=$id, name='$name', address='$address', description='$description', subway=$subway)"
+    }
+}

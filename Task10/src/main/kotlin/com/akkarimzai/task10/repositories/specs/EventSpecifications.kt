@@ -12,9 +12,8 @@ object EventSpecifications {
         return Specification<Event> { root, query, criteriaBuilder ->
             val predicates = mutableListOf<Predicate>()
 
-            root.fetch<Event, Place>("place", JoinType.LEFT)
+            predicates.add(criteriaBuilder.equal(root.get<Place>("place").get<Long>("id"), placeId))
 
-            predicates.add(criteriaBuilder.equal(root.join<Event, Place>("place").get<Long>("Id"), placeId))
             name?.let {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%${name.lowercase()}%"))
             }

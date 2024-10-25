@@ -1,9 +1,14 @@
 package com.akkarimzai.task10.controllers
 
+import com.akkarimzai.task10.entities.Place
+import com.akkarimzai.task10.models.event.EventDto
 import com.akkarimzai.task10.models.place.*
 import com.akkarimzai.task10.services.PlaceService
 import mu.KotlinLogging
 import org.springframework.data.domain.Page
+import org.springframework.data.web.PagedResourcesAssembler
+import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -15,14 +20,14 @@ class PlaceController(
     private val logger = KotlinLogging.logger {}
 
     @GetMapping
-    fun list(@RequestParam page: Int = 1,
-             @RequestParam size: Int = 10): Page<PlaceDto> {
+    fun list(@RequestParam page: Int = 0,
+             @RequestParam size: Int = 10,
+             assembler: PagedResourcesAssembler<PlaceDto>
+    ): PagedModel<EntityModel<PlaceDto>> {
         logger.info { "Request list" }
-        return service.list(
-            ListPlaceQuery(
-                page = page, size = size
-            )
-        )
+        val pagedEvents =  service.list(
+            ListPlaceQuery(page = page, size = size))
+        return assembler.toModel(pagedEvents)
     }
 
     @GetMapping("{placeId}")

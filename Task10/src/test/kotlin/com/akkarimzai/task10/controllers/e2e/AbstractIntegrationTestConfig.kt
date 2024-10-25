@@ -17,32 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @Testcontainers
 abstract class AbstractIntegrationTestConfig(
     private val webTestClient: WebTestClient,
-) {
-    fun createPlace(command: CreatePlaceCommand): PlaceDto {
-        val createdPlaceId = webTestClient.post()
-            .uri("/api/places")
-            .accept(MediaType.APPLICATION_JSON)
-            .bodyValue(command)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody(Long::class.java)
-            .returnResult()
-            .responseBody
-        createdPlaceId!! shouldBeGreaterThan 0
-
-        return fetchById(createdPlaceId)!!
-    }
-
-    fun fetchById(id: Long): PlaceDto? {
-        return webTestClient.get()
-            .uri("/api/places/$id")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody(PlaceDto::class.java)
-            .returnResult()
-            .responseBody
-    }
+): FunSpec() {
     companion object {
         val psqlContainer = PostgreSQLContainer("postgres:14-alpine3.20").apply {
             withDatabaseName("task10")
