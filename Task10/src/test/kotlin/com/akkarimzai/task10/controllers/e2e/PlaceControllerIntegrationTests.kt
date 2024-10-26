@@ -3,6 +3,7 @@ package com.akkarimzai.task10.controllers.e2e
 import com.akkarimzai.task10.models.place.CreatePlaceCommand
 import com.akkarimzai.task10.models.place.PlaceDto
 import com.akkarimzai.task10.models.place.UpdatePlaceCommand
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -32,10 +33,10 @@ class PlaceControllerIntegrationTests(
 
         // Assert
         val createdPlace = fetchById(createdPlaceId)
-        assert(createdPlace != null)
-        assert(createdPlace!!.name == command.name)
-        assert(createdPlace.address == command.address)
-        assert(createdPlace.description == command.description)
+        createdPlace shouldNotBe  null
+        createdPlace!!.name shouldBeEqual command.name
+        createdPlace.address shouldBeEqual command.address
+        createdPlace.description shouldBeEqual command.description
     }
 
     @Test
@@ -62,9 +63,9 @@ class PlaceControllerIntegrationTests(
         val fetchedPlace = fetchById(createdPlaceId)
 
         // Assert
-        assert(fetchedPlace != null)
-        assert(fetchedPlace!!.id == createdPlaceId)
-        assert(fetchedPlace.name == command.name)
+        fetchedPlace != null
+        fetchedPlace!!.id shouldBeEqual createdPlaceId
+        fetchedPlace.name shouldBeEqual command.name
     }
 
     @Test
@@ -84,8 +85,8 @@ class PlaceControllerIntegrationTests(
 
         // Assert
         val updatedPlace = fetchById(createdPlaceId)
-        assert(updatedPlace != null)
-        assert(updatedPlace!!.name == updateCommand.name!!)
+        updatedPlace shouldNotBe  null
+        updatedPlace!!.name shouldBeEqual updateCommand.name!!
     }
 
     @Test
@@ -113,7 +114,7 @@ class PlaceControllerIntegrationTests(
     fun `list should return place paged place list from DB`() {
         // Arrange
         val command = CreatePlaceCommand("Test", "Test", "Test", null)
-        createPlace(command) // Ensure at least one place is created
+        createPlace(command)
 
         // Act && Assert
         webTestClient.get()
