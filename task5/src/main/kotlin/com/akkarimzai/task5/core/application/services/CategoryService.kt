@@ -29,7 +29,7 @@ class CategoryService(private val repository: IEntityRepository<Category>) {
 
         logger.info { "Saving new category $entity" }
         repository.save(entity)
-        return entity.id.also {
+        return entity.id!!.also {
             logger.info { "Successfully saved new category $entity" }
         }
     }

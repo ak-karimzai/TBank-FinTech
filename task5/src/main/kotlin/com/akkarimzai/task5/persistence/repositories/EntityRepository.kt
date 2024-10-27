@@ -1,5 +1,6 @@
 package com.akkarimzai.task5.persistence.repositories
 
+import com.akkarimzai.task5.persistence.repositories.observers.IEntityObserver
 import com.akkarimzai.task5.core.application.contracts.persistence.IEntityRepository
 import com.akkarimzai.task5.core.domain.common.Entity
 import com.akkarimzai.task5.persistence.annotations.logging.LogExecutionTime
@@ -9,15 +10,29 @@ import java.util.*
 
 @LogExecutionTime
 open class EntityRepository<T>(
-    private val context: InMemoryStore<UUID, T>
+    private val context: InMemoryStore<UUID, T>,
 ) : IEntityRepository<T> where T : Entity {
     private val logger = KotlinLogging.logger {}
+    private val observers = mutableListOf<IEntityObserver<T>>()
+
+    fun addObserver(observer: IEntityObserver<T>) {
+        observers.add(observer)
+    }
+
+    fun removeObserver(observer: IEntityObserver<T>) {
+        observers.remove(observer)
+    }
+
+    private fun notifyObservers(entity: T) {
+        observers.forEach { it.update(entity) }
+    }
 
     override fun save(entity: T) {
         logger.info { "Saving $entity" }
 
+        notifyObservers(entity)
         entity.id = UUID.randomUUID()
-        context.collection[entity.id] = entity
+        context.collection[entity.id!!] = entity
 
         logger.info { "entity $entity saved" }
     }
@@ -27,7 +42,8 @@ open class EntityRepository<T>(
     }
 
     override fun update(entity: T) {
-        context.collection[entity.id] = entity
+        notifyObservers(entity)
+        context.collection[entity.id!!] = entity
     }
 
     override fun delete(id: UUID) {

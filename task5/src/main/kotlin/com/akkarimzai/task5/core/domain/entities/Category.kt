@@ -4,14 +4,10 @@ import com.akkarimzai.task5.core.domain.common.Entity
 import java.util.UUID
 
 class Category(
-    id: UUID,
+    id: UUID? = null,
     var slug: String,
     var name: String
 ) : Entity(id) {
-    constructor(
-        slug: String, name: String
-    ) : this(UUID(0L, 0L), slug, name)
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

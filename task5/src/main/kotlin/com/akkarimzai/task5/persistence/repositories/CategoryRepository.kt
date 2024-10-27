@@ -8,5 +8,5 @@ import java.util.*
 
 @Repository
 class CategoryRepository(
-    context: InMemoryStore<UUID, Category>
+    context: InMemoryStore<UUID, Category>,
 ) : ICategoryRepository, EntityRepository<Category>(context)
