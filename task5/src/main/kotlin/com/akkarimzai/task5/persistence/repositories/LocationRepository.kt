@@ -10,7 +10,7 @@ import java.util.*
 @Repository
 @LogExecutionTime
 class LocationRepository(
-    val context: InMemoryStore<UUID, Location>
+    val context: InMemoryStore<UUID, Location>,
 ) : ILocationRepository, EntityRepository<Location>(context) {
     override fun slugExist(slug: String): Boolean {
         return context.collection.values.any { it.slug == slug }

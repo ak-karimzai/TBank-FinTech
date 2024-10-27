@@ -3,6 +3,11 @@ package com.akkarimzai.task5.persistence
 import com.akkarimzai.task5.core.domain.entities.Category
 import com.akkarimzai.task5.core.domain.entities.Location
 import com.akkarimzai.task5.core.application.contracts.infrastructure.INewsClient
+import com.akkarimzai.task5.core.domain.common.Entity
+import com.akkarimzai.task5.persistence.repositories.CategoryRepository
+import com.akkarimzai.task5.persistence.repositories.LocationRepository
+import com.akkarimzai.task5.persistence.repositories.observers.EntityObserver
+import com.akkarimzai.task5.persistence.repositories.observers.IEntityObserver
 import com.akkarimzai.task5.persistence.utils.InMemoryStore
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +27,8 @@ import kotlin.system.measureTimeMillis
 class DataInitializer(
     @Autowired @Qualifier("fixedThreadPool") private val fixedThreadPool: ExecutorService,
     @Autowired @Qualifier("scheduledThreadPool") private val scheduledThreadPool: ExecutorService,
-    @Autowired @Qualifier("categories") private val categories: InMemoryStore<UUID, Category>,
-    @Autowired @Qualifier("locations") private val locations: InMemoryStore<UUID, Location>,
+    @Autowired private val categoryObservers: List<IEntityObserver<Category>>,
+    @Autowired private val locationObservers: List<IEntityObserver<Location>>,
     @Autowired private val newsService: INewsClient,
     @Value("\${concurrency.initialize.delay}") private val scheduleDuration: Duration
 ) : ApplicationListener<ApplicationStartedEvent> {
@@ -53,30 +58,32 @@ class DataInitializer(
     }
 
     fun initializeCategories() {
-        newsService.fetchCategories().let { it ->
+        newsService.fetchCategories().let {
             it.forEach { kudagoCategory ->
-                val id = UUID.randomUUID()
-                categories.collection[id] = Category(
-                    id = id,
+                val category = Category(
                     slug = kudagoCategory.slug,
                     name = kudagoCategory.name
                 )
+                notifyObservers(categoryObservers, category)
             }
             logger.info { "${it.size} categories fetched successfully" }
         }
     }
 
     fun initializeLocations() {
-        newsService.fetchLocations().let { it ->
+        newsService.fetchLocations().let {
             it.forEach { kudagoLocation ->
-                val id = UUID.randomUUID()
-                locations.collection[id] = Location(
-                    id = id,
+                val location = Location(
                     slug = kudagoLocation.slug,
                     name = kudagoLocation.name
                 )
+                notifyObservers(locationObservers, location)
             }
             logger.info { "${it.size} locations fetched successfully" }
         }
+    }
+
+    fun <T : Entity> notifyObservers(observers: List<IEntityObserver<T>>, entity: T) {
+        observers.forEach { it.update(entity) }
     }
 }

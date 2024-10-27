@@ -35,7 +35,7 @@ class LocationService(private val repository: ILocationRepository) {
         val entity = newLocation.toEntity()
 
         repository.save(entity)
-        return entity.id.also {
+        return entity.id!!.also {
             logger.info { "Location created: $it" }
         }
     }
