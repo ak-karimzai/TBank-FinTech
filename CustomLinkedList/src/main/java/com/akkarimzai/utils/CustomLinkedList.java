@@ -5,6 +5,7 @@ import com.akkarimzai.exceptions.NoSuchElementException;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class CustomLinkedList<T> implements Iterable<T> {
     private Node<T> head;
@@ -144,5 +145,10 @@ public class CustomLinkedList<T> implements Iterable<T> {
 
             return ret;
         }
+    }
+
+    @SafeVarargs
+    public static <E> CustomLinkedList<E> of(E... elements) {
+        return new CustomLinkedList<>(List.of(elements));
     }
 }
