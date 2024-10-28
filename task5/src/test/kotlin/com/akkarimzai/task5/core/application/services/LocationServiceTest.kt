@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.persistence.ILocationRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.repositories.ILocationRepository
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList
@@ -22,7 +22,8 @@ class LocationServiceTest : FunSpec() {
                 // Arrange
                 val createLocation = CreateLocation("test", "test")
                 val entity = createLocation.toEntity()
-                every { repository.save(entity) } just Runs
+                val savedEntity = Location(UUID.randomUUID(), entity.slug, entity.name)
+                every { repository.save(entity) } returns savedEntity
                 every { repository.slugExist(createLocation.slug) } returns false
 
                 // Act

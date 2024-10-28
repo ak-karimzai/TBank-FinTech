@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.persistence.ICategoryRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.repositories.ICategoryRepository
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList
@@ -22,7 +22,8 @@ class CategoryServiceTest : FunSpec() {
              // Arrange
              val createCategory = CreateCategory("test", "test")
              val entity = createCategory.toEntity()
-             every { repository.save(entity) } just Runs
+             val savedEntity = Category(UUID.randomUUID(), entity.name, entity.slug)
+             every { repository.save(entity) } returns savedEntity
 
              // Act
              service.save(createCategory)

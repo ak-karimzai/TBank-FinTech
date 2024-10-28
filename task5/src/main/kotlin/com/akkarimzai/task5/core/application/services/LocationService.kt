@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.persistence.ILocationRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.repositories.ILocationRepository
 import com.akkarimzai.task5.core.application.exceptions.BadRequestException
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
@@ -34,8 +34,8 @@ class LocationService(private val repository: ILocationRepository) {
         logger.info { "Mapping $newLocation to location" }
         val entity = newLocation.toEntity()
 
-        repository.save(entity)
-        return entity.id!!.also {
+        return repository.save(entity).id!!
+         entity.id!!.also {
             logger.info { "Location created: $it" }
         }
     }

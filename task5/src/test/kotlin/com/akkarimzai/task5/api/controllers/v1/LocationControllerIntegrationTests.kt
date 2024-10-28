@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.api.controllers.v1
 
-import com.akkarimzai.task5.core.application.contracts.persistence.ILocationRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.repositories.ILocationRepository
 import com.akkarimzai.task5.core.application.models.PageableList
 import com.akkarimzai.task5.core.application.models.PaginatedList
 import com.akkarimzai.task5.core.application.models.location.CreateLocation
