@@ -9,12 +9,9 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        CustomLinkedList<Integer> customList = new CustomLinkedList<>();
+        CustomLinkedList<Integer> customList = CustomLinkedList.of(1, 2, 3);
 
-        customList.add(1);
-        customList.add(2);
-        customList.add(3);
-        customList.forEach(System.out::println);
+        customList.iterator().forEachRemaining(System.out::println);
 
         int elementAtZero = customList.get(0);
         System.out.println("Element at index 0: " + elementAtZero);
