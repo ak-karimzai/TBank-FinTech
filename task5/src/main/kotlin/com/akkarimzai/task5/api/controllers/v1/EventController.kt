@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 import java.util.concurrent.CompletableFuture
@@ -20,7 +21,7 @@ class EventController(private val service: EventService) {
     fun list(@RequestParam(required = true) budget: Double,
              @RequestParam(required = true) currency: String,
              @RequestParam dateFrom: LocalDate = LocalDate.now().with(ChronoField.DAY_OF_WEEK, 1),
-             @RequestParam dateTo: LocalDate = LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7)) : CompletableFuture<List<Event>> {
+             @RequestParam dateTo: LocalDate = LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7)) : Mono<List<Event>> {
         return service.list(ListEvents(
             budget = budget,
             currency = currency,

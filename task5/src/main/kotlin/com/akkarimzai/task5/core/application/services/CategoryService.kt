@@ -1,6 +1,6 @@
 package com.akkarimzai.task5.core.application.services
 
-import com.akkarimzai.task5.core.application.contracts.persistence.IEntityRepository
+import com.akkarimzai.task5.core.application.contracts.persistence.repositories.IEntityRepository
 import com.akkarimzai.task5.core.application.exceptions.NotFoundException
 import com.akkarimzai.task5.core.application.exceptions.ValidationException
 import com.akkarimzai.task5.core.application.models.PageableList
@@ -28,8 +28,7 @@ class CategoryService(private val repository: IEntityRepository<Category>) {
         val entity = newCategory.toEntity()
 
         logger.info { "Saving new category $entity" }
-        repository.save(entity)
-        return entity.id.also {
+        return repository.save(entity).id!!.also {
             logger.info { "Successfully saved new category $entity" }
         }
     }

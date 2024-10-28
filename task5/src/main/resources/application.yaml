@@ -19,6 +19,7 @@ api:
     categories: /place-categories/
     locations: /locations/
     events: /events/
+    rate-limit: 2
   currency:
     base-url: http://localhost:8081/currencies
     convert: /convert

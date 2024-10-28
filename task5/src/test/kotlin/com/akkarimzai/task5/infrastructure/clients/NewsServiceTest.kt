@@ -12,6 +12,11 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.wiremock.integrations.testcontainers.WireMockContainer
+import java.time.LocalDate
+import java.time.temporal.ChronoField
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @Testcontainers
 @SpringBootTest
@@ -21,24 +26,18 @@ class NewsClientIntegrationTests {
     private lateinit var newsService: NewsClient
 
     @Test
-    fun `categories list are not empty`(): Unit = runBlocking {
-        // Arrange
-        var categoriesUri = "/place-categories/"
-
+    fun `categories list are not empty`() {
         // Act
-        val categories = newsService.fetchLocations(categoriesUri)
+        val categories = newsService.fetchLocations()
 
         // Assert
         categories.size shouldNotBe 0
     }
 
     @Test
-    fun `locations list are not empty`(): Unit = runBlocking {
-        // Arrange
-        var locationUri = "/locations/"
-
+    fun `locations list are not empty`() {
         // Act
-        val locations = newsService.fetchLocations(locationUri)
+        val locations = newsService.fetchLocations()
 
         // Assert
         locations.size shouldNotBe 0
@@ -46,23 +45,17 @@ class NewsClientIntegrationTests {
 
     @Test
     fun `locations when uri is invalid should failed in request`(): Unit = runBlocking {
-        // Arrange
-        var locationUri = "/locationss/"
-
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
-            val locations = newsService.fetchLocations(locationUri)
+            val locations = newsService.fetchLocations()
         }
     }
 
     @Test
     fun `categories when uri is invalid should failed in request`(): Unit = runBlocking {
-        // Arrange
-        var categoriesUri = "/place-categoriess/"
-
         // Act && Assert
         assertThrows<ServiceUnavailableException> {
-            val locations = newsService.fetchCategories(categoriesUri)
+            val locations = newsService.fetchCategories()
         }
     }
 
@@ -71,7 +64,7 @@ class NewsClientIntegrationTests {
         @JvmStatic
         val wiremock: WireMockContainer =
             WireMockContainer("wiremock/wiremock:3.5.4")
-                .withMappingFromResource("kudago-v1.4-stub", "kudago-v1.4-stub.json")
+                .withMappingFromResource("kudago-success-stub", "kudago-success-stub.json")
 
         @DynamicPropertySource
         @JvmStatic

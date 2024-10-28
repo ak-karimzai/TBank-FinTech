@@ -10,6 +10,7 @@ import com.akkarimzai.task5.core.application.profiles.toEntity
 import com.akkarimzai.task5.core.domain.entities.Event
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
 
 @Service
@@ -19,35 +20,35 @@ class EventService(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    fun list(query: ListEvents): CompletableFuture<List<Event>> {
+    fun list(query: ListEvents): Mono<List<Event>> {
         logger.info { "Loading events $query" }
         val validationResult: List<String> = query.validate()
         if (validationResult.isNotEmpty()) {
-            throw ValidationException(validationResult).also {
+            return Mono.error(ValidationException(validationResult).also {
                 logger.error { "Validation failure, validation result: ${it.validationResult}" }
-            }
+            })
         }
 
         if (query.dateFrom > query.dateTo) {
-            throw BadRequestException("Invalid date range!")
+            return Mono.error(BadRequestException("Invalid date range!"))
         }
 
-        val budgetFuture = if (query.currency.uppercase() != "RUB") {
-            CompletableFuture.supplyAsync {
+        val budgetMono: Mono<Double> = if (query.currency.uppercase() != "RUB") {
+            Mono.fromCallable {
                 currencyClient.convertCurrency(
                     ConvertCurrencyCommand(query.currency, "RUB", query.budget)
                 ).convertedAmount
             }
         } else {
-            CompletableFuture.completedFuture(query.budget);
+            Mono.just(query.budget)
         }
 
-        val eventFuture = CompletableFuture.supplyAsync {
+        val eventsMono: Mono<List<Event>> = Mono.fromCallable {
             newsClient.fetchEvents(query.dateFrom, query.dateTo)
                 .map { it.toEntity() }
         }
 
-        return budgetFuture.thenCombine(eventFuture) { budget, events ->
+        return Mono.zip(budgetMono, eventsMono) { budget, events ->
             events.filter { it.dates.start in query.dateFrom..query.dateTo && it.price <= budget }
         }
     }
