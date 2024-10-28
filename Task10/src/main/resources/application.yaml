@@ -1,0 +1,23 @@
+spring:
+  application.name: task10
+  datasource:
+    url: jdbc:postgresql://localhost:5454/task10
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+  docker.compose:
+      enabled: true
+      file: docker-compose.yml
+
+  jpa:
+    properties.hibernate.show_sql: false
+    hibernate:
+      ddl-auto: validate
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.yml
+
+logging.level.org.hibernate:
+  SQL: DEBUG
+  type.descriptor.sql.BasicBinder: WARN
