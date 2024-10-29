@@ -4,9 +4,10 @@ import com.akkarimzai.exceptions.IndexOutOfBoundsException;
 import com.akkarimzai.exceptions.NoSuchElementException;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
 
-public class CustomLinkedList<T> implements Iterable<T> {
+public class CustomLinkedList<T> {
     private Node<T> head;
     private Node<T> tail;
     private int size;
@@ -16,11 +17,6 @@ public class CustomLinkedList<T> implements Iterable<T> {
     }
 
     public CustomLinkedList(Collection<? extends T> c) {
-        this();
-        this.addAll(c);
-    }
-
-    public CustomLinkedList(CustomLinkedList<T> c) {
         this();
         this.addAll(c);
     }
@@ -100,12 +96,11 @@ public class CustomLinkedList<T> implements Iterable<T> {
 
     public boolean addAll(CustomLinkedList<? extends T> c) {
         int sizeBeforeAppendAll = this.size;
-        c.forEach(this::add);
+        c.iterator().forEachRemaining(this::add);
         return sizeBeforeAppendAll != this.size;
     }
 
-    @Override
-    public Iterator<T> iterator() {
+    public CustomIterator<T> iterator() {
         return new CustomLinkedListIterator<>(head);
     }
 
@@ -121,7 +116,7 @@ public class CustomLinkedList<T> implements Iterable<T> {
         }
     }
 
-    private static class CustomLinkedListIterator<T> implements Iterator<T> {
+    private static class CustomLinkedListIterator<T> implements CustomIterator<T> {
         private Node<T> curr;
 
         public CustomLinkedListIterator(Node<T> head) {
@@ -144,5 +139,16 @@ public class CustomLinkedList<T> implements Iterable<T> {
 
             return ret;
         }
+
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            while (hasNext())
+                action.accept(next());
+        }
+    }
+
+    @SafeVarargs
+    public static <E> CustomLinkedList<E> of(E... elements) {
+        return new CustomLinkedList<>(List.of(elements));
     }
 }

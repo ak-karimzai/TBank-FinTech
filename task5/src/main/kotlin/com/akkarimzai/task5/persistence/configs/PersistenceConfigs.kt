@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Semaphore
 
 @Configuration
 class PersistenceConfigs {
