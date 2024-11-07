@@ -1,11 +1,8 @@
 package com.akkarimzai.task10.controllers
 
-import com.akkarimzai.task10.entities.Place
-import com.akkarimzai.task10.models.event.EventDto
 import com.akkarimzai.task10.models.place.*
 import com.akkarimzai.task10.services.PlaceService
 import mu.KotlinLogging
-import org.springframework.data.domain.Page
 import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.PagedModel

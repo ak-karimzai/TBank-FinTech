@@ -8,6 +8,7 @@ import org.springframework.hateoas.EntityModel
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.hateoas.PagedModel
+import org.springframework.security.access.prepost.PreAuthorize
 import java.time.LocalDateTime
 
 @RestController

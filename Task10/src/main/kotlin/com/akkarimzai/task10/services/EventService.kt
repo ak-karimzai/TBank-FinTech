@@ -7,6 +7,7 @@ import com.akkarimzai.task10.exceptions.NotFoundException
 import com.akkarimzai.task10.exceptions.ValidationException
 import com.akkarimzai.task10.models.common.ValidatableCQ
 import com.akkarimzai.task10.models.event.*
+import com.akkarimzai.task10.models.user.LoginCommand
 import com.akkarimzai.task10.profiles.toEventDto
 import com.akkarimzai.task10.profiles.toEventEntity
 import com.akkarimzai.task10.repositories.EventRepository
@@ -21,7 +22,7 @@ import org.springframework.data.domain.PageRequest
 class EventService(
     private val eventRepository: EventRepository,
     private val placeRepository: PlaceRepository,
-) {
+) : AbstractService() {
     private val logger = KotlinLogging.logger {}
 
     fun create(placeId: Long, command: CreateEventCommand): Long? {
@@ -108,15 +109,6 @@ class EventService(
             EventSpecifications.buildSpecification(placeId, query.name, query.fromDate, query.toDate),
             PageRequest.of(query.page, query.size))
             .map { it.toEventDto() }
-    }
-
-    private fun validateRequest(request: ValidatableCQ) {
-        val validationResult = request.validate()
-        validationResult.let {
-            if (it.isNotEmpty()) {
-                throw ValidationException(it)
-            }
-        }
     }
 
     private fun loadEvent(placeId: Long, eventId: Long): Event {

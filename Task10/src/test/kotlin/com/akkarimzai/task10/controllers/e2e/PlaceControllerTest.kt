@@ -24,6 +24,7 @@ class PlaceControllerIntegrationTests(
         val createdPlaceId = webTestClient.post()
             .uri("/api/places")
             .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer ${adminToken}")
             .bodyValue(command)
             .exchange()
             .expectStatus().isCreated
@@ -48,6 +49,7 @@ class PlaceControllerIntegrationTests(
         webTestClient.post()
             .uri("/api/places")
             .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer ${adminToken}")
             .bodyValue(command)
             .exchange()
             .expectStatus().isBadRequest
@@ -79,6 +81,7 @@ class PlaceControllerIntegrationTests(
         webTestClient.put()
             .uri("/api/places/${createdPlaceId}")
             .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer ${adminToken}")
             .bodyValue(updateCommand)
             .exchange()
             .expectStatus().isNoContent
@@ -100,12 +103,14 @@ class PlaceControllerIntegrationTests(
         createdPlace shouldNotBe null
         webTestClient.delete()
             .uri("/api/places/${createdPlace!!.id}")
+            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isNoContent
 
         // Assert
         webTestClient.get()
             .uri("/api/places/${createdPlaceId}")
+            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isNotFound
     }
@@ -119,6 +124,7 @@ class PlaceControllerIntegrationTests(
         // Act && Assert
         webTestClient.get()
             .uri("/api/places?page=0&size=10")
+            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isOk
     }

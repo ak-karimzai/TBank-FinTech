@@ -2,12 +2,16 @@ package com.akkarimzai.task10.profiles
 
 import com.akkarimzai.task10.entities.Event
 import com.akkarimzai.task10.entities.Place
+import com.akkarimzai.task10.entities.Role
+import com.akkarimzai.task10.entities.User
 import com.akkarimzai.task10.models.event.CreateEventCommand
 import com.akkarimzai.task10.models.event.EventDto
 import com.akkarimzai.task10.models.event.UpdateEventCommand
 import com.akkarimzai.task10.models.place.CreatePlaceCommand
 import com.akkarimzai.task10.models.place.PlaceDto
 import com.akkarimzai.task10.models.place.UpdatePlaceCommand
+import com.akkarimzai.task10.models.user.RegisterCommand
+import org.springframework.security.crypto.password.PasswordEncoder
 
 fun Event.toEventDto(): EventDto {
     return EventDto(
@@ -63,5 +67,14 @@ fun UpdatePlaceCommand.toPlaceEntity(place: Place): Place {
         address = this.address ?: place.address,
         description = this.description ?: place.description,
         subway = this.subway ?: place.subway
+    )
+}
+
+fun RegisterCommand.toUser(passwordEncoder: PasswordEncoder): User {
+    return User(
+        username = this.username,
+        email = this.email,
+        password = passwordEncoder.encode(this.password),
+        role = Role.USER
     )
 }
