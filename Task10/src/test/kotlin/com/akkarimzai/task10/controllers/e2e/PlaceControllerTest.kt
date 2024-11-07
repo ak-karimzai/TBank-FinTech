@@ -3,18 +3,28 @@ package com.akkarimzai.task10.controllers.e2e
 import com.akkarimzai.task10.models.place.CreatePlaceCommand
 import com.akkarimzai.task10.models.place.PlaceDto
 import com.akkarimzai.task10.models.place.UpdatePlaceCommand
+import com.akkarimzai.task10.repositories.UserRepository
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.web.reactive.server.WebTestClient
 import kotlin.test.Test
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PlaceControllerIntegrationTests(
-    @Autowired private val webTestClient: WebTestClient
+class PlaceControllerTest(
+    @Autowired private val webTestClient: WebTestClient,
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val passwordEncoder: PasswordEncoder
 ): AbstractIntegrationTestConfig() {
+    @BeforeEach
+    fun `refresh tokens`() {
+        createUsersSaveThemInDatabaseAndRetrieveToken(userRepository, webTestClient, passwordEncoder)
+    }
+
     @Test
     fun `should create place successfully and persist in DB`() {
         // Arrange
@@ -38,6 +48,21 @@ class PlaceControllerIntegrationTests(
         createdPlace!!.name shouldBeEqual command.name
         createdPlace.address shouldBeEqual command.address
         createdPlace.description shouldBeEqual command.description
+    }
+
+    @Test
+    fun `simple user can't create a place`() {
+        // Arrange
+        val command = CreatePlaceCommand("Test", "Test", "Test", null)
+
+        // Act
+        webTestClient.post()
+            .uri("/api/places")
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer ${userToken}")
+            .bodyValue(command)
+            .exchange()
+            .expectStatus().isForbidden
     }
 
     @Test
@@ -110,7 +135,6 @@ class PlaceControllerIntegrationTests(
         // Assert
         webTestClient.get()
             .uri("/api/places/${createdPlaceId}")
-            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isNotFound
     }
@@ -124,7 +148,6 @@ class PlaceControllerIntegrationTests(
         // Act && Assert
         webTestClient.get()
             .uri("/api/places?page=0&size=10")
-            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isOk
     }
@@ -133,6 +156,7 @@ class PlaceControllerIntegrationTests(
         return webTestClient.post()
             .uri("/api/places")
             .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer ${adminToken}")
             .bodyValue(command)
             .exchange()
             .expectStatus().isCreated
