@@ -6,6 +6,7 @@ import com.akkarimzai.task10.exceptions.NotFoundException
 import com.akkarimzai.task10.exceptions.ValidationException
 import com.akkarimzai.task10.models.common.ValidatableCQ
 import com.akkarimzai.task10.models.place.*
+import com.akkarimzai.task10.models.user.LoginCommand
 import com.akkarimzai.task10.profiles.toPlaceDto
 import com.akkarimzai.task10.profiles.toPlaceEntity
 import com.akkarimzai.task10.repositories.PlaceRepository
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service
 @Service
 class PlaceService(
     private val repository: PlaceRepository
-) {
+) : AbstractService() {
     private val logger = KotlinLogging.logger {}
 
     fun create(command: CreatePlaceCommand): Long? {
@@ -82,15 +83,6 @@ class PlaceService(
             .map { it.toPlaceDto() }.also {
                 logger.info { "Listed event list successfully." }
             }
-    }
-
-    private fun validateRequest(request: ValidatableCQ) {
-        val validationResult = request.validate()
-        validationResult.let {
-            if (it.isNotEmpty()) {
-                throw ValidationException(it)
-            }
-        }
     }
 
     private fun loadPlace(placeId: Long): Place {

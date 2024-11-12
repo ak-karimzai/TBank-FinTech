@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: "2"
+      author: "khalid"
+      changes:
+        - createTable:
+            tableName: "users"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "username"
+                  type: "TEXT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "password"
+                  type: "TEXT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "email"
+                  type: "TEXT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "role"
+                  type: "TEXT"
+                  constraints:
+                    nullable: true
+
+        - createSequence:
+            sequenceName: "user_seq"
+            incrementBy: 1
+            startValue: 1

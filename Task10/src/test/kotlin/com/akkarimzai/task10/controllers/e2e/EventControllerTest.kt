@@ -1,14 +1,23 @@
 package com.akkarimzai.task10.controllers.e2e
 
+import com.akkarimzai.task10.entities.Role
+import com.akkarimzai.task10.entities.User
 import com.akkarimzai.task10.models.event.CreateEventCommand
 import com.akkarimzai.task10.models.event.EventDto
 import com.akkarimzai.task10.models.event.UpdateEventCommand
 import com.akkarimzai.task10.models.place.CreatePlaceCommand
+import com.akkarimzai.task10.models.user.JwtAuthResponse
+import com.akkarimzai.task10.models.user.LoginCommand
+import com.akkarimzai.task10.repositories.UserRepository
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.LocalDateTime
 import kotlin.test.Test
@@ -16,19 +25,40 @@ import kotlin.test.Test
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class EventControllerTest(
     @Autowired private val webTestClient: WebTestClient,
-): AbstractIntegrationTestConfig() {
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val passwordEncoder: PasswordEncoder
+) : AbstractIntegrationTestConfig() {
+    @BeforeEach
+    fun `refresh tokens`() {
+        createUsersSaveThemInDatabaseAndRetrieveToken(userRepository, webTestClient, passwordEncoder)
+    }
+
     @Test
     fun `create should create a new event`() {
         // Arrange
         val command = CreateEventCommand("test", LocalDateTime.of(2020, 1, 1, 10, 10), null)
         val placeId = createPlace()
-
-        // Act && Assert
         val createdEventId = createEvent(placeId, command)
         val createdEvent = getEvent(placeId, createdEventId)
+
+        // Act && Assert
         createdEvent.name shouldBeEqual command.name
         createdEvent.date shouldBeEqual command.date
         createdEvent.tagline?.shouldBeEqual(command.tagline!!)
+    }
+
+    @Test
+    fun `simple user can't create a new event`() {
+        val command = CreateEventCommand("test", LocalDateTime.of(2020, 1, 1, 10, 10), null)
+        val placeId = createPlace()
+
+        webTestClient.post()
+            .uri("/api/places/$placeId/events")
+            .header("Authorization", "Bearer ${userToken}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(command)
+            .exchange()
+            .expectStatus().isForbidden
     }
 
     @Test
@@ -40,6 +70,7 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.post()
             .uri("/api/places/${placeId}/events")
+            .header("Authorization", "Bearer ${adminToken}")
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(command)
             .exchange()
@@ -70,6 +101,7 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.get()
             .uri("/api/places/${placeId}/events/$invalidId")
+            .header("Authorization", "Bearer ${userToken}")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isBadRequest
@@ -84,6 +116,7 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.get()
             .uri("/api/places/${placeId}/events/$validId")
+            .header("Authorization", "Bearer ${userToken}")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isNotFound
@@ -100,6 +133,7 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.put()
             .uri("/api/places/${placeID}/events/${eventID}")
+            .header("Authorization", "Bearer ${adminToken}")
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(updateCommand)
             .exchange()
@@ -120,6 +154,8 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.put()
             .uri("/api/places/${placeId}/events/${eventId}")
+            .header("Authorization", "Bearer ${adminToken}")
+            .bodyValue(updateCommand)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isBadRequest
@@ -135,11 +171,13 @@ class EventControllerTest(
         // Act && Assert
         webTestClient.delete()
             .uri("/api/places/${placeId}/events/${eventId}")
+            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isNoContent
 
         webTestClient.get()
             .uri("/api/places/${placeId}/events/${eventId}")
+            .header("Authorization", "Bearer ${userToken}")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isNotFound
@@ -161,6 +199,7 @@ class EventControllerTest(
                     .queryParam("size", size)
                     .build()
             }
+            .header("Authorization", "Bearer ${userToken}")
             .exchange()
             .expectStatus().isOk
     }
@@ -181,6 +220,7 @@ class EventControllerTest(
                     .queryParam("size", size)
                     .build()
             }
+            .header("Authorization", "Bearer ${userToken}")
             .exchange()
             .expectStatus().isBadRequest
     }
@@ -188,6 +228,7 @@ class EventControllerTest(
     private fun createEvent(placeId: Long, command: CreateEventCommand): Long {
         return webTestClient.post()
             .uri("/api/places/$placeId/events")
+            .header("Authorization", "Bearer ${adminToken}")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(command)
             .exchange()
@@ -200,6 +241,7 @@ class EventControllerTest(
     private fun getEvent(placeId: Long, eventId: Long): EventDto {
         return webTestClient.get()
             .uri("/api/places/$placeId/events/$eventId")
+            .header("Authorization", "Bearer ${adminToken}")
             .exchange()
             .expectStatus().isOk
             .expectBody(EventDto::class.java)
@@ -210,6 +252,7 @@ class EventControllerTest(
     private fun createPlace(): Long {
         return webTestClient.post()
             .uri("/api/places")
+            .header("Authorization", "Bearer ${adminToken}")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(CreatePlaceCommand("test", "test address", "test description", null))
             .exchange()
@@ -219,3 +262,4 @@ class EventControllerTest(
             .responseBody!!
     }
 }
+
