@@ -19,11 +19,6 @@ jobs:
           java-version: '17'
           distribution: 'OpenJDK'
 
-      - name: Set up Kotlin
-        uses: actions/setup-kotlin@v1
-        with:
-          kotlin-version: '1.9.25'
-
       - name: Cache Gradle dependencies
         uses: actions/cache@v2
         with:
