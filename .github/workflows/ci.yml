@@ -30,6 +30,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd Task10
+          chmod +x gradlew
           ./gradlew build --no-daemon
 
       - name: Run tests
