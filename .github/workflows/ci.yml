@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'OpenJDK'
+
+      - name: Set up Kotlin
+        uses: actions/setup-kotlin@v1
+        with:
+          kotlin-version: '1.9.25'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches, ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install dependencies and build
+        run: |
+          cd Task10
+          ./gradlew build --no-daemon
+
+      - name: Run tests
+        run: |
+          cd Task10
+          ./gradlew test --no-daemon
+
+      - name: Calculate test coverage
+        run: |
+          cd Task10
+          ./gradlew jacocoTestReport --no-daemon
+
