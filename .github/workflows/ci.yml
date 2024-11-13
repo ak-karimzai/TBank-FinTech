@@ -66,8 +66,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/task-10:${{ github.sha }} Task10/.
+          docker build -t ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')/task-10:${{ github.sha }} Task10/.
       
       - name: Push Docker image to GitHub Packages
         run: |
-          docker push ghcr.io/${{ github.repository }}/task-10:${{ github.sha }}
+          docker push ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')/task-10:${{ github.sha }}
