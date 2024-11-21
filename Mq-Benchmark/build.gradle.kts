@@ -21,9 +21,14 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+}
+
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(17)
 }

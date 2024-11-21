@@ -1,0 +1,6 @@
+warmupIterations: 1
+measurementIterations: 2
+fork: 1
+
+warmupTime: 500ms
+measurementTime: 1s

@@ -1,18 +1,13 @@
 package com.akkarimzai.io
 
-import com.akkarimzai.utils.generateRandomString
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.apache.kafka.clients.consumer.ConsumerConfig
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.kafka.common.serialization.StringSerializer
 import java.time.Duration
 import java.util.Properties
-import kotlin.random.Random
 
 class KafkaBroker(private val topic: String = "test_topic"): MessageBroker {
     private val producerProps = Properties().apply {
@@ -30,13 +25,19 @@ class KafkaBroker(private val topic: String = "test_topic"): MessageBroker {
 
     override fun runProducersAndConsumers(producerCount: Int, consumerCount: Int) {
         runBlocking {
+            val stopSignal = Channel<Unit>(capacity = consumerCount)
             val producers = (1..producerCount).map {
                 launch { runProducer(it) }
             }
             val consumers = (1..consumerCount).map {
-                launch { runConsumer(it) }
+                launch { runConsumer(it, stopSignal) }
             }
             producers.forEach { it.join() }
+
+            repeat(consumerCount) {
+                stopSignal.send(Unit)
+            }
+
             consumers.forEach { it.join() }
         }
     }
@@ -47,17 +48,26 @@ class KafkaBroker(private val topic: String = "test_topic"): MessageBroker {
                 repeat(100) { i ->
                     val message = "Producer $id - Message $i"
                     producer.send(ProducerRecord(topic, null, message))
+                    println(message)
                 }
             }
         }
     }
 
-    private suspend fun runConsumer(id: Int) {
+    @OptIn(DelicateCoroutinesApi::class)
+    private suspend fun runConsumer(id: Int, stopSignal: Channel<Unit>) {
         withContext(Dispatchers.IO) {
             KafkaConsumer<String, String>(consumerProps).use { consumer ->
                 consumer.subscribe(listOf(topic))
                 while (true) {
                     val records = consumer.poll(Duration.ofMillis(100))
+                    if (records.isEmpty && stopSignal.isClosedForReceive) {
+                        break
+                    }
+
+                    records.forEach { record ->
+                        println("Consumer $id received: ${record.value()}")
+                    }
                 }
             }
         }
