@@ -1,7 +1,6 @@
 package com.akkarimzai.task10.configs
 
 import com.akkarimzai.task10.controllers.middlewares.JwtAuthenticationMiddleware
-import com.akkarimzai.task10.entities.Role
 import com.akkarimzai.task10.services.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

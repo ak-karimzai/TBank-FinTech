@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.jpa") version "1.9.25"
     kotlin("kapt") version "1.8.0"
+    id("jacoco")
 }
 
 group = "com.akkarimzai"
@@ -37,7 +38,7 @@ dependencies {
     kapt("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    implementation("org.springframework.boot:spring-boot-docker-compose")
+//    implementation("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
@@ -86,6 +87,32 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.withType<JacocoReport> {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.map { it ->
+            fileTree(it).apply {
+                exclude( "**/models**")
+                exclude("**/entities**")
+            }
+        })
+    }
 }

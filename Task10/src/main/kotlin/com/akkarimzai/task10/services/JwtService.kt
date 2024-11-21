@@ -3,10 +3,8 @@ package com.akkarimzai.task10.services
 import com.akkarimzai.task10.entities.Token
 import com.akkarimzai.task10.entities.User
 import com.akkarimzai.task10.exceptions.BadRequestException
-import com.akkarimzai.task10.exceptions.UnauthorizedException
 import com.akkarimzai.task10.repositories.TokenRepository
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
