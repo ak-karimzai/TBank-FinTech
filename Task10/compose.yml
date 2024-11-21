@@ -8,3 +8,12 @@ services:
       POSTGRES_PASSWORD: root
     ports:
       - 5454:5432
+
+  task-10:
+    container_name: task-10
+    build:
+      context: ./
+    ports:
+      - 8080:8080
+    depends_on:
+      - psql
