@@ -1,15 +1,22 @@
-FROM gradle:7.6.0-jdk17 AS build
+FROM gradle:8.2.1-jdk17 AS builder
+
 WORKDIR /app
 
+COPY build.gradle.kts settings.gradle.kts /app/
+COPY gradle /app/gradle
+
+RUN gradle dependencies --no-daemon
+
 COPY . .
-RUN gradle clean build --no-daemon
+
+RUN gradle bootJar --no-daemon
 
 FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -38,7 +38,7 @@ dependencies {
     kapt("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    implementation("org.springframework.boot:spring-boot-docker-compose")
+//    implementation("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
