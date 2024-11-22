@@ -1,19 +1,22 @@
 package com.akkarimzai
 
+import com.akkarimzai.io.KafkaBroker
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
-
-import com.akkarimzai.io.RabbitMQBroker
 
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 3, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 3, timeUnit = TimeUnit.SECONDS)
 @State(Scope.Thread)
 open class BrokerBenchmark {
+    @Param(value = ["1", "3"])
+    var producerCount: Int = 1
+    @Param(value = ["1", "3"])
+    var consumerCount: Int = 1
+
     @Benchmark
-    fun rabbitMqProducerBenchmark() {
-        val broker = RabbitMQBroker()
-        broker.runProducersAndConsumers(1, 1)
+    fun runBenchmark() {
+        val broker = KafkaBroker()
+        broker.runBenchmarks(producerCount, consumerCount)
     }
 }

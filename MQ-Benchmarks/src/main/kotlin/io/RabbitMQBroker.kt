@@ -1,7 +1,9 @@
 package com.akkarimzai.io
 
+import com.akkarimzai.utils.generateRandomString
 import com.rabbitmq.client.ConnectionFactory
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 class RabbitMQBroker(private val queueName: String = "test_queue") : MessageBroker {
     private val factory = ConnectionFactory().apply {
@@ -11,7 +13,7 @@ class RabbitMQBroker(private val queueName: String = "test_queue") : MessageBrok
         password = "password"
     }
 
-    override fun runProducersAndConsumers(producerCount: Int, consumerCount: Int) {
+    override fun runBenchmarks(producerCount: Int, consumerCount: Int) {
         runBlocking {
             val producers = (1..producerCount).map { id ->
                 launch { runProducer(id) }
@@ -32,9 +34,10 @@ class RabbitMQBroker(private val queueName: String = "test_queue") : MessageBrok
                 connection = factory.newConnection()
                 channel = connection.createChannel()
                 channel.queueDeclare(queueName, false, false, false, null)
-                repeat(100) { i ->
-                    val message = "Producer $id - Message $i"
+                repeat(1000) { i ->
+                    val message = generateRandomString(Random.nextInt(1024, 10240))
                     channel.basicPublish("", queueName, null, message.toByteArray())
+//                    println(message)
                 }
             } finally {
                 channel?.close()
@@ -54,8 +57,8 @@ class RabbitMQBroker(private val queueName: String = "test_queue") : MessageBrok
                 val consumerTag = "Consumer $id"
                 channel.basicConsume(queueName, true, { _, delivery ->
                     val message = String(delivery.body)
+//                    println("$consumerTag $message")
                 }) { _ -> }
-                delay(5000)
             } finally {
                 channel?.close()
                 connection?.close()
