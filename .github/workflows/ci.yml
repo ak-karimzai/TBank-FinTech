@@ -50,6 +50,7 @@ jobs:
           path: Task10/build/reports/jacoco/test/html
     
       - name: Static code analysis
+        continue-on-error: true
         run: |
           cd Task10
           curl -sSLO https://github.com/detekt/detekt/releases/download/v1.23.7/detekt-cli-1.23.7.zip

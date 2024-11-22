@@ -13,7 +13,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -89,7 +89,7 @@ allOpen {
 
 jacoco {
     toolVersion = "0.8.12"
-    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
 }
 
 tasks.withType<Test> {
@@ -103,16 +103,16 @@ tasks.test {
 tasks.withType<JacocoReport> {
     dependsOn(tasks.test)
     reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
     afterEvaluate {
-        classDirectories = files(classDirectories.files.map { it ->
+        classDirectories.setFrom(files(classDirectories.files.map {
             fileTree(it).apply {
-                exclude( "**/models**")
+                exclude("**/models**")
                 exclude("**/entities**")
             }
-        })
+        }))
     }
 }
