@@ -50,6 +50,7 @@ class SecurityConfiguration(
             .authorizeHttpRequests { request ->
                 request
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")

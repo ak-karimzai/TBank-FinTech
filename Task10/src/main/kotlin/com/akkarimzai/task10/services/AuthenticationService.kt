@@ -23,8 +23,8 @@ class AuthenticationService(
     private val logger = KotlinLogging.logger {}
 
     fun register(command: RegisterCommand): JwtAuthResponse {
-        MDC.put("username", command.username)
-        logger.info { "Request register" }
+        MDC.put("RequestRegisterUsername", command.username)
+        logger.info { "Request register: ${command.username}" }
 
         validateRequest(command)
 

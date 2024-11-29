@@ -52,6 +52,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("net.logstash.logback:logstash-logback-encoder:8.0")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.liquibase:liquibase-core")
