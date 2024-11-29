@@ -5,9 +5,6 @@ spring:
     username: root
     password: root
     driver-class-name: org.postgresql.Driver
-#  docker.compose:
-#      enabled: true
-#      file: compose.yml
 
   jpa:
     properties.hibernate.show_sql: false
