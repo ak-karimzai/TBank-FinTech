@@ -7,6 +7,7 @@ import com.akkarimzai.task10.models.user.ResetPasswordCommand
 import com.akkarimzai.task10.profiles.toUser
 import mu.KotlinLogging
 import org.apache.coyote.BadRequestException
+import org.slf4j.MDC
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,16 +23,23 @@ class AuthenticationService(
     private val logger = KotlinLogging.logger {}
 
     fun register(command: RegisterCommand): JwtAuthResponse {
+        MDC.put("RequestRegisterUsername", command.username)
         logger.info { "Request register: ${command.username}" }
 
         validateRequest(command)
 
         val user = command.toUser(passwordEncoder)
 
-        logger.info { "Mapped user: ${command.username}" }
-        val createdUser = userService.create(user)
-        val jwt = jwtService.generateToken(createdUser)
-        return JwtAuthResponse(jwt)
+        return try {
+            logger.info { "Mapped user" }
+
+            val createdUser = userService.create(user)
+            val jwt = jwtService.generateToken(createdUser)
+
+            JwtAuthResponse(jwt)
+        } finally {
+            MDC.clear()
+        }
     }
 
     fun login(command: LoginCommand): JwtAuthResponse {

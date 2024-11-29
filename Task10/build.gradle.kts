@@ -34,11 +34,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.springframework.security:spring-security-test")
     kapt("org.hibernate:hibernate-jpamodelgen:6.6.1.Final")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-//    implementation("org.springframework.boot:spring-boot-docker-compose")
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
@@ -50,6 +51,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.liquibase:liquibase-core")
